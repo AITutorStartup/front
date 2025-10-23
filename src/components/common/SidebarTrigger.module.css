@@ -1,0 +1,12 @@
+.triggerButton {
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  cursor: pointer;
+  border-radius: var(--radius);
+  color: hsl(var(--foreground));
+}
+
+.triggerButton:hover {
+  background-color: hsl(var(--secondary));
+}

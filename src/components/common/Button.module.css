@@ -1,0 +1,35 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: var(--radius);
+  border: 1px solid hsl(var(--border));
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.button:hover:not(:disabled) {
+  background-color: hsl(var(--secondary));
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Пример для кнопки с градиентом, как в ChatInput */
+.gradient {
+  background: var(--gradient-primary);
+  color: hsl(var(--primary-foreground));
+  border: none;
+}
+
+.gradient:hover:not(:disabled) {
+  opacity: 0.9;
+  background: var(--gradient-primary); /* Убираем эффект hover от .button */
+}
