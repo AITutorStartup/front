@@ -2,17 +2,20 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
-import { SidebarProvider } from "./context/SidebarContext"; 
+import Register from "./pages/auth/Register"; 
+import Login from "./pages/auth/Login";     
+import { SidebarProvider } from "./context/SidebarContext";
 
 const queryClient = new QueryClient();
 
 const App = () => (
-  // 2. Оборачиваем все в наш SidebarProvider
   <SidebarProvider>
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/register" element={<Register />} /> 
+          <Route path="/login" element={<Login />} />       
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

@@ -13,12 +13,12 @@
 
 .header {
   display: flex;
-  height: 3.5rem;
+  justify-content: space-between; 
   align-items: center;
-  gap: 1rem;
+  height: 3.5rem;
+  padding: 0 1.5rem;
   border-bottom: 1px solid var(--border);
   background-color: var(--background);
-  padding: 0 1.5rem;
 }
 
 .headerTitle {
@@ -66,4 +66,23 @@
   margin-right: auto;
   max-width: 56rem;
   padding: 0 1rem;
+}
+
+.authLinks {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.authLink {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: hsl(var(--primary));
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.authLink:hover {
+  color: hsl(var(--accent));
+  text-decoration: underline;
 }

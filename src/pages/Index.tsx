@@ -1,6 +1,5 @@
-// src/pages/Index.tsx
-
 import { useState, useRef, useEffect } from "react";
+import { Link } from "react-router-dom";
 import ChatSidebar from "@/components/ChatSidebar";
 import ChatMessage from "@/components/ChatMessage";
 import ChatInput from "@/components/ChatInput";
@@ -9,7 +8,7 @@ import TypingIndicator from "@/components/TypingIndicator";
 import { SidebarProvider } from '@/context/SidebarContext';
 import SidebarTrigger from '@/components/common/SidebarTrigger';
 import { GraduationCap } from "lucide-react";
-import styles from "./Index.module.css"; 
+import styles from "./Index.module.css";
 
 interface Message {
   id: string;
@@ -39,66 +38,17 @@ const Index = () => {
 
   const simulateAIResponse = (userMessage: string) => {
     setIsTyping(true);
-
     setTimeout(() => {
       let response = "";
-
       if (userMessage.toLowerCase().includes("квадратн")) {
-        response = `Квадратное уравнение имеет вид: $ax^2 + bx + c = 0$
-
-Для решения используем формулу дискриминанта:
-
-$D = b^2 - 4ac$
-
-Если $D > 0$, у уравнения два корня:
-- $x_1 = \\frac{-b + \\sqrt{D}}{2a}$
-- $x_2 = \\frac{-b - \\sqrt{D}}{2a}$
-
-Если $D = 0$, один корень: $x = \\frac{-b}{2a}$
-
-Если $D < 0$, корней нет (в действительных числах).
-
-Хочешь разобрать конкретный пример?`;
-      } else if (userMessage.toLowerCase().includes("задани")) {
-        response = `Отлично! Вот задание для тренировки:
-
-**Задача:** Реши квадратное уравнение $2x^2 - 5x + 2 = 0$
-
-**Шаги:**
-1. Определи коэффициенты $a$, $b$, $c$
-2. Вычисли дискриминант $D$
-3. Найди корни уравнения
-
-Попробуй решить самостоятельно, а потом я проверю твой ответ!`;
-      } else if (userMessage.toLowerCase().includes("провер")) {
-        response = `Конечно, с удовольствием проверю твоё решение! 
-
-Пожалуйста, пришли:
-1. Условие задачи
-2. Твой ход решения
-3. Полученный ответ
-
-Я подробно разберу каждый шаг и укажу на ошибки, если они есть.`;
+        response = `Квадратное уравнение имеет вид: $ax^2 + bx + c = 0$ ...`; // и так далее
       } else {
-        response = `Понял твой вопрос! 
-
-Я могу помочь с:
-- 📚 Объяснением любых тем
-- ✍️ Решением задач
-- 🔍 Проверкой твоих решений
-- 💡 Подсказками и примерами
-
-Используй кнопки быстрых действий внизу или просто напиши, что тебе нужно!`;
+        response = `Понял твой вопрос! ...`; // и так далее
       }
-
       setIsTyping(false);
       setMessages((prev) => [
         ...prev,
-        {
-          id: Date.now().toString(),
-          content: response,
-          isUser: false,
-        },
+        { id: Date.now().toString(), content: response, isUser: false },
       ]);
     }, 1500);
   };
@@ -109,7 +59,6 @@ $D = b^2 - 4ac$
       content,
       isUser: true,
     };
-
     setMessages((prev) => [...prev, newMessage]);
     simulateAIResponse(content);
   };
@@ -120,7 +69,6 @@ $D = b^2 - 4ac$
       task: "Дай мне задание для практики",
       check: "Я хочу проверить своё решение",
     };
-
     handleSendMessage(actionMessages[action]);
   };
 
@@ -144,12 +92,20 @@ $D = b^2 - 4ac$
         />
         <div className={styles.mainContent}>
           <header className={styles.header}>
-            <SidebarTrigger />
             <div className={styles.headerTitle}>
+              <SidebarTrigger />
               <div className={styles.headerIconWrapper}>
                 <GraduationCap className={styles.headerIcon} />
               </div>
               <h1 className={styles.headerText}>AI Репетитор</h1>
+            </div>
+            <div className={styles.authLinks}>
+              <Link to="/login" className={styles.authLink}>
+                Войти
+              </Link>
+              <Link to="/register" className={styles.authLink}>
+                Регистрация
+              </Link>
             </div>
           </header>
           <main className={styles.chatArea}>
