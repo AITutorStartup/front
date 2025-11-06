@@ -1,9 +1,8 @@
 import { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import ChatSidebar from "@/components/ChatSidebar";
 import ChatMessage from "@/components/ChatMessage";
 import ChatInput from "@/components/ChatInput";
-import QuickActions from "@/components/QuickActions";
 import TypingIndicator from "@/components/TypingIndicator";
 import { SidebarProvider } from '@/context/SidebarContext';
 import SidebarTrigger from '@/components/common/SidebarTrigger';
@@ -18,15 +17,36 @@ interface Message {
 
 const Index = () => {
   const [currentSessionId, setCurrentSessionId] = useState("1");
+
+  const [mode, setMode] = useState<'theory' | 'practice'>('theory');
+
+  const getWelcomeByMode = (m: 'theory' | 'practice') =>
+    m === 'theory'
+      ? 'Присылай тему, которую не понял, или вопрос — помогу разобраться.'
+      : 'Готов решить пару задач по пройденной теме.';
+
+  const getActionMessage = (action: string, m: 'theory' | 'practice') => {
+    if (action === 'check') return 'Я хочу проверить своё решение';
+    if (m === 'theory') {
+      if (action === 'explain') return 'Объясни мне текущую тему подробно';
+      if (action === 'task') return 'Дай небольшой пример для иллюстрации';
+    } else {
+      if (action === 'explain') return 'Короткая подсказка по теме';
+      if (action === 'task') return 'Дай мне задание для практики';
+    }
+    return 'Понял твой запрос';
+  };
+
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
-      content: "Привет! Я твой AI-репетитор. Готов помочь с любыми учебными вопросами. Чем могу быть полезен?",
+      content: getWelcomeByMode(mode),
       isUser: false,
     },
   ]);
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const location = useLocation();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -36,14 +56,29 @@ const Index = () => {
     scrollToBottom();
   }, [messages, isTyping]);
 
+  // Sync mode with URL: /practice -> 'practice', otherwise 'theory'
+  useEffect(() => {
+    if (location.pathname.includes('/practice')) {
+      setMode('practice');
+    } else if (location.pathname.includes('/theory') || location.pathname === '/') {
+      setMode('theory');
+    }
+  }, [location.pathname]);
+
   const simulateAIResponse = (userMessage: string) => {
     setIsTyping(true);
     setTimeout(() => {
-      let response = "";
-      if (userMessage.toLowerCase().includes("квадратн")) {
-        response = `Квадратное уравнение имеет вид: $ax^2 + bx + c = 0$ ...`; // и так далее
+      let response = '';
+      if (userMessage.toLowerCase().includes('квадратн')) {
+        response =
+          mode === 'theory'
+            ? 'Теория: Квадратное уравнение имеет вид: ax^2 + bx + c = 0. Дискриминант D = b^2 - 4ac ...'
+            : 'Практика: Реши уравнение 2x^2 - 3x - 2 = 0. Попробуй формулу дискриминанта. Напиши шаги.';
       } else {
-        response = `Понял твой вопрос! ...`; // и так далее
+        response =
+          mode === 'theory'
+            ? 'Давай разберёмся теоретически: сформулируй, что именно непонятно, и я распишу по пунктам.'
+            : 'Готов дать практику: хочешь задачу базового или повышенного уровня?';
       }
       setIsTyping(false);
       setMessages((prev) => [
@@ -63,20 +98,13 @@ const Index = () => {
     simulateAIResponse(content);
   };
 
-  const handleQuickAction = (action: string) => {
-    const actionMessages: Record<string, string> = {
-      explain: "Объясни мне текущую тему подробно",
-      task: "Дай мне задание для практики",
-      check: "Я хочу проверить своё решение",
-    };
-    handleSendMessage(actionMessages[action]);
-  };
+  // Быстрые действия удалены из интерфейса
 
   const handleNewSession = () => {
     setMessages([
       {
         id: "1",
-        content: "Новая сессия начата! Чем могу помочь?",
+        content: getWelcomeByMode(mode),
         isUser: false,
       },
     ]);
@@ -108,6 +136,30 @@ const Index = () => {
               </Link>
             </div>
           </header>
+          <nav className={styles.topModeBar} aria-label="Режим">
+            <div
+              className={`${styles.topModeGroup} ${mode === 'theory' ? styles.isTheory : styles.isPractice}`}
+              role="tablist"
+            >
+              <span className={styles.modeSlider} aria-hidden="true" />
+              <Link
+                to="/theory"
+                role="tab"
+                aria-selected={mode === 'theory'}
+                className={`${styles.modeLink} ${mode === 'theory' ? styles.modeLinkActive : ''}`}
+              >
+                Теория
+              </Link>
+              <Link
+                to="/practice"
+                role="tab"
+                aria-selected={mode === 'practice'}
+                className={`${styles.modeLink} ${mode === 'practice' ? styles.modeLinkActive : ''}`}
+              >
+                Практика
+              </Link>
+            </div>
+          </nav>
           <main className={styles.chatArea}>
             <div className={styles.messagesContainer}>
               <div className={styles.messagesList}>
@@ -122,7 +174,6 @@ const Index = () => {
                 <div ref={messagesEndRef} />
               </div>
             </div>
-            <QuickActions onAction={handleQuickAction} disabled={isTyping} />
             <ChatInput onSend={handleSendMessage} disabled={isTyping} />
           </main>
         </div>
