@@ -60,7 +60,7 @@ const Index = () => {
   useEffect(() => {
     if (location.pathname.includes('/practice')) {
       setMode('practice');
-    } else if (location.pathname.includes('/theory') || location.pathname === '/') {
+    } else if (location.pathname.includes('/theory') || location.pathname === '/app') {
       setMode('theory');
     }
   }, [location.pathname]);
