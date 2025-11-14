@@ -58,4 +58,141 @@ export const api = {
   delete: <T>(path: string, options?: Omit<RequestOptions, "method" | "body">) => request<T>(path, { ...options, method: "DELETE" }),
 };
 
+/**
+ * Streams LLM response using SSE (Server-Sent Events)
+ * @param prompt - The user's prompt
+ * @param onDelta - Callback for each text delta (chunk)
+ * @param onMeta - Callback for metadata events
+ * @param onDone - Callback when stream completes
+ * @param onError - Callback for errors
+ * @param signal - AbortSignal for cancellation
+ * @param timeout - Request timeout in milliseconds (default: 120000)
+ */
+export async function streamGenerate(
+  prompt: string,
+  onDelta: (text: string) => void,
+  onMeta?: (meta: any) => void,
+  onDone?: () => void,
+  onError?: (error: Error) => void,
+  signal?: AbortSignal,
+  timeout: number = 120000
+): Promise<void> {
+  const token = getAuthToken();
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    "Accept": "text/event-stream",
+  };
+  if (token) headers["Authorization"] = `Bearer ${token}`;
+
+  // Create timeout abort controller
+  const timeoutController = new AbortController();
+  const timeoutId = setTimeout(() => {
+    timeoutController.abort();
+  }, timeout);
+
+  // Combine signals
+  const combinedSignal = signal
+    ? (() => {
+        const controller = new AbortController();
+        signal.addEventListener("abort", () => controller.abort());
+        timeoutController.signal.addEventListener("abort", () => controller.abort());
+        return controller.signal;
+      })()
+    : timeoutController.signal;
+
+  try {
+    const response = await fetch(`${BASE_URL}/generate`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({ prompt }),
+      signal: combinedSignal,
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText || `HTTP ${response.status}: ${response.statusText}`);
+    }
+
+    if (!response.body) {
+      throw new Error("Response body is null");
+    }
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = "";
+
+    while (true) {
+      const { done, value } = await reader.read();
+
+      if (done) {
+        // Process remaining buffer
+        if (buffer.trim()) {
+          processBuffer(buffer, onDelta, onMeta);
+        }
+        clearTimeout(timeoutId);
+        onDone?.();
+        break;
+      }
+
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split("\n\n");
+      buffer = lines.pop() || ""; // Keep incomplete line in buffer
+
+      for (const line of lines) {
+        if (line.startsWith("data: ")) {
+          const jsonStr = line.slice(6); // Remove "data: " prefix
+          try {
+            const data = JSON.parse(jsonStr);
+            processEvent(data, onDelta, onMeta);
+          } catch (e) {
+            console.warn("Failed to parse SSE data:", jsonStr, e);
+          }
+        }
+      }
+    }
+  } catch (error: any) {
+    clearTimeout(timeoutId);
+    if (error.name === "AbortError") {
+      const abortError = new Error("Запрос прерван");
+      abortError.name = "AbortError";
+      onError?.(abortError);
+    } else {
+      onError?.(error instanceof Error ? error : new Error(String(error)));
+    }
+    throw error;
+  }
+}
+
+function processEvent(
+  data: any,
+  onDelta: (text: string) => void,
+  onMeta?: (meta: any) => void
+) {
+  if (data.type === "delta" && data.text) {
+    onDelta(data.text);
+  } else if (data.type === "meta" && onMeta) {
+    onMeta(data);
+  }
+}
+
+function processBuffer(
+  buffer: string,
+  onDelta: (text: string) => void,
+  onMeta?: (meta: any) => void
+) {
+  const lines = buffer.split("\n");
+  for (const line of lines) {
+    if (line.startsWith("data: ")) {
+      const jsonStr = line.slice(6);
+      try {
+        const data = JSON.parse(jsonStr);
+        processEvent(data, onDelta, onMeta);
+      } catch (e) {
+        // Ignore parse errors for incomplete data
+      }
+    }
+  }
+}
+
 

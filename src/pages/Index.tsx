@@ -7,6 +7,7 @@ import TypingIndicator from "@/components/TypingIndicator";
 import { SidebarProvider } from '@/context/SidebarContext';
 import SidebarTrigger from '@/components/common/SidebarTrigger';
 import { GraduationCap } from "lucide-react";
+import { streamGenerate } from "@/lib/api";
 import styles from "./Index.module.css";
 
 interface Message {
@@ -46,6 +47,7 @@ const Index = () => {
   ]);
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
   const location = useLocation();
 
   const scrollToBottom = () => {
@@ -65,37 +67,86 @@ const Index = () => {
     }
   }, [location.pathname]);
 
-  const simulateAIResponse = (userMessage: string) => {
-    setIsTyping(true);
-    setTimeout(() => {
-      let response = '';
-      if (userMessage.toLowerCase().includes('квадратн')) {
-        response =
-          mode === 'theory'
-            ? 'Теория: Квадратное уравнение имеет вид: ax^2 + bx + c = 0. Дискриминант D = b^2 - 4ac ...'
-            : 'Практика: Реши уравнение 2x^2 - 3x - 2 = 0. Попробуй формулу дискриминанта. Напиши шаги.';
-      } else {
-        response =
-          mode === 'theory'
-            ? 'Давай разберёмся теоретически: сформулируй, что именно непонятно, и я распишу по пунктам.'
-            : 'Готов дать практику: хочешь задачу базового или повышенного уровня?';
-      }
-      setIsTyping(false);
-      setMessages((prev) => [
-        ...prev,
-        { id: Date.now().toString(), content: response, isUser: false },
-      ]);
-    }, 1500);
-  };
+  const handleSendMessage = async (content: string) => {
+    // Cancel any ongoing request
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
 
-  const handleSendMessage = (content: string) => {
     const newMessage: Message = {
       id: Date.now().toString(),
       content,
       isUser: true,
     };
     setMessages((prev) => [...prev, newMessage]);
-    simulateAIResponse(content);
+
+    // Create AI response message placeholder
+    const aiMessageId = (Date.now() + 1).toString();
+    const aiMessage: Message = {
+      id: aiMessageId,
+      content: "",
+      isUser: false,
+    };
+    setMessages((prev) => [...prev, aiMessage]);
+    setIsTyping(true);
+
+    // Create new abort controller
+    abortControllerRef.current = new AbortController();
+    let accumulatedText = "";
+
+    try {
+      await streamGenerate(
+        content,
+        (delta) => {
+          accumulatedText += delta;
+          setMessages((prev) =>
+            prev.map((msg) =>
+              msg.id === aiMessageId
+                ? { ...msg, content: accumulatedText }
+                : msg
+            )
+          );
+        },
+        (meta) => {
+          console.log("Meta:", meta);
+        },
+        () => {
+          setIsTyping(false);
+          abortControllerRef.current = null;
+        },
+        (error) => {
+          console.error("Stream error:", error);
+          setIsTyping(false);
+          setMessages((prev) =>
+            prev.map((msg) =>
+              msg.id === aiMessageId
+                ? {
+                    ...msg,
+                    content:
+                      error.name === "AbortError"
+                        ? "Запрос прерван пользователем."
+                        : `Ошибка: ${error.message}`,
+                  }
+                : msg
+            )
+          );
+          abortControllerRef.current = null;
+        },
+        abortControllerRef.current.signal
+      );
+    } catch (error) {
+      console.error("Error in streamGenerate:", error);
+      setIsTyping(false);
+      abortControllerRef.current = null;
+    }
+  };
+
+  const handleCancel = () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+      setIsTyping(false);
+    }
   };
 
   // Быстрые действия удалены из интерфейса
@@ -174,7 +225,12 @@ const Index = () => {
                 <div ref={messagesEndRef} />
               </div>
             </div>
-            <ChatInput onSend={handleSendMessage} disabled={isTyping} />
+            <ChatInput 
+              onSend={handleSendMessage} 
+              disabled={isTyping}
+              onCancel={handleCancel}
+              showCancel={isTyping}
+            />
           </main>
         </div>
       </div>

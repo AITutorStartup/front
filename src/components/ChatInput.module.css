@@ -70,3 +70,27 @@
   height: 1.25rem;
   width: 1.25rem;  
 }
+
+.cancelButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 60px;
+  width: 60px;
+  flex-shrink: 0;
+  border: none;
+  border-radius: var(--radius);
+  color: hsl(var(--destructive-foreground));
+  cursor: pointer;
+  background: hsl(var(--destructive));
+  transition: opacity 0.2s ease-in-out;
+}
+
+.cancelButton:hover {
+  opacity: 0.9;
+}
+
+.cancelIcon {
+  height: 1.25rem;
+  width: 1.25rem;
+}

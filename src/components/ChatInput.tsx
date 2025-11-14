@@ -1,13 +1,15 @@
 import { useState, KeyboardEvent } from "react";
-import { Send } from "lucide-react";
+import { Send, X } from "lucide-react";
 import styles from "./ChatInput.module.css"; 
 
 interface ChatInputProps {
   onSend: (message: string) => void;
   disabled?: boolean;
+  onCancel?: () => void;
+  showCancel?: boolean;
 }
 
-const ChatInput = ({ onSend, disabled }: ChatInputProps) => {
+const ChatInput = ({ onSend, disabled, onCancel, showCancel }: ChatInputProps) => {
   const [message, setMessage] = useState("");
 
   const handleSend = () => {
@@ -17,10 +19,18 @@ const ChatInput = ({ onSend, disabled }: ChatInputProps) => {
     }
   };
 
+  const handleCancel = () => {
+    if (onCancel) {
+      onCancel();
+    }
+  };
+
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      handleSend();
+      if (!showCancel) {
+        handleSend();
+      }
     }
   };
 
@@ -37,13 +47,23 @@ const ChatInput = ({ onSend, disabled }: ChatInputProps) => {
             className={styles.textarea}
           />
 
-          <button
-            onClick={handleSend}
-            disabled={!message.trim() || disabled}
-            className={styles.sendButton}
-          >
-            <Send className={styles.sendIcon} />
-          </button>
+          {showCancel && onCancel ? (
+            <button
+              onClick={handleCancel}
+              className={styles.cancelButton}
+              title="Остановить генерацию"
+            >
+              <X className={styles.cancelIcon} />
+            </button>
+          ) : (
+            <button
+              onClick={handleSend}
+              disabled={!message.trim() || disabled}
+              className={styles.sendButton}
+            >
+              <Send className={styles.sendIcon} />
+            </button>
+          )}
         </div>
       </div>
     </div>
