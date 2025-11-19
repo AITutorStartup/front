@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ChatSidebar from "@/components/ChatSidebar";
 import ChatMessage from "@/components/ChatMessage";
 import ChatInput from "@/components/ChatInput";
@@ -8,6 +8,7 @@ import { SidebarProvider } from '@/context/SidebarContext';
 import SidebarTrigger from '@/components/common/SidebarTrigger';
 import { GraduationCap } from "lucide-react";
 import { streamGenerate } from "@/lib/api";
+import { useAuth } from "@/context/AuthContext";
 import styles from "./Index.module.css";
 
 interface Message {
@@ -28,6 +29,8 @@ const Practice = () => {
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
+  const navigate = useNavigate();
+  const { isAuthenticated, isChecking, logout } = useAuth();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -106,6 +109,37 @@ const Practice = () => {
     setMessages([{ id: "1", content: getWelcomeByMode(), isUser: false }]);
   };
 
+  const handleLogout = async () => {
+    await logout();
+    navigate("/login");
+  };
+
+  const renderAuthActions = () => {
+    if (isChecking) {
+      return (
+        <span className={styles.authLink} style={{ cursor: "default" }}>
+          ...
+        </span>
+      );
+    }
+
+    if (!isAuthenticated) {
+      return (
+        <>
+          <Link to="/login" className={styles.authLink}>Войти</Link>
+          <Link to="/register" className={styles.authLink}>Регистрация</Link>
+        </>
+      );
+    }
+
+    return (
+      <>
+        <Link to="/verify-email" className={styles.authLink}>Аккаунт</Link>
+        <button type="button" onClick={handleLogout} className={styles.authLink}>Выйти</button>
+      </>
+    );
+  };
+
   return (
     <SidebarProvider>
       <div className={styles.pageWrapper}>
@@ -123,10 +157,7 @@ const Practice = () => {
               </div>
               <h1 className={styles.headerText}>AI Репетитор</h1>
             </div>
-            <div className={styles.authLinks}>
-              <Link to="/login" className={styles.authLink}>Войти</Link>
-              <Link to="/register" className={styles.authLink}>Регистрация</Link>
-            </div>
+            <div className={styles.authLinks}>{renderAuthActions()}</div>
           </header>
           <nav className={styles.topModeBar} aria-label="Режим">
             <div className={`${styles.topModeGroup} ${styles.isPractice}`} role="tablist">

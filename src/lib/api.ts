@@ -1,20 +1,40 @@
-const BASE_URL = import.meta.env.VITE_API_URL || "/api";
+const normalizeBaseUrl = (value?: string) => {
+  if (!value || value.trim() === "") {
+    return "";
+  }
+  const trimmed = value.trim();
+  if (trimmed === "/") {
+    return "";
+  }
+  return trimmed.endsWith("/") ? trimmed.slice(0, -1) : trimmed;
+};
 
-const TOKEN_STORAGE_KEY = "auth_jwt";
+const RAW_AUTH_BASE_URL =
+  import.meta.env.VITE_AUTH_API_URL ||
+  import.meta.env.VITE_API_URL ||
+  "/api";
 
-export function saveAuthToken(token: string) {
-  localStorage.setItem(TOKEN_STORAGE_KEY, token);
-}
+const RAW_LLM_BASE_URL =
+  import.meta.env.VITE_LLM_API_URL ||
+  import.meta.env.VITE_API_URL ||
+  RAW_AUTH_BASE_URL;
 
-export function getAuthToken(): string | null {
-  return localStorage.getItem(TOKEN_STORAGE_KEY);
-}
-
-export function clearAuthToken() {
-  localStorage.removeItem(TOKEN_STORAGE_KEY);
-}
+const AUTH_BASE_URL = normalizeBaseUrl(RAW_AUTH_BASE_URL);
+const LLM_BASE_URL = normalizeBaseUrl(RAW_LLM_BASE_URL);
 
 type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+
+export class ApiError extends Error {
+  status: number;
+  payload: unknown;
+
+  constructor(message: string, status: number, payload?: unknown) {
+    super(message);
+    this.name = "ApiError";
+    this.status = status;
+    this.payload = payload;
+  }
+}
 
 interface RequestOptions {
   method?: HttpMethod;
@@ -23,39 +43,71 @@ interface RequestOptions {
   signal?: AbortSignal;
 }
 
+const normalizePath = (path: string) => (path.startsWith("/") ? path : `/${path}`);
+
+const parseResponse = async (response: Response) => {
+  if (response.status === 204) {
+    return null;
+  }
+
+  const contentType = response.headers.get("content-type") || "";
+
+  if (contentType.includes("application/json")) {
+    try {
+      return await response.json();
+    } catch {
+      return null;
+    }
+  }
+
+  const text = await response.text();
+  return text || null;
+};
+
 async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
-  const token = getAuthToken();
+  const isFormData = options.body instanceof FormData;
   const headers: Record<string, string> = {
-    "Content-Type": "application/json",
+    ...(!isFormData ? { "Content-Type": "application/json" } : {}),
     ...options.headers,
   };
-  if (token) headers["Authorization"] = `Bearer ${token}`;
 
-  const res = await fetch(`${BASE_URL}${path}`, {
+  const response = await fetch(`${AUTH_BASE_URL}${normalizePath(path)}`, {
     method: options.method || "GET",
     headers,
-    body: options.body !== undefined ? JSON.stringify(options.body) : undefined,
+    body:
+      options.body === undefined || isFormData
+        ? options.body
+        : JSON.stringify(options.body),
     signal: options.signal,
     credentials: "include",
   });
 
-  const isJson = res.headers.get("content-type")?.includes("application/json");
-  const data = isJson ? await res.json() : (await res.text() as any);
+  const data = await parseResponse(response);
 
-  if (!res.ok) {
-    const message = (data && (data.message || data.error)) || res.statusText;
-    throw new Error(message);
+  if (!response.ok) {
+    const message =
+      (data && typeof data === "object" && "detail" in data && (data as any).detail) ||
+      (data && typeof data === "object" && "message" in data && (data as any).message) ||
+      (typeof data === "string" && data) ||
+      response.statusText;
+
+    throw new ApiError(String(message || "Request failed"), response.status, data);
   }
 
   return data as T;
 }
 
 export const api = {
-  get: <T>(path: string, options?: Omit<RequestOptions, "method" | "body">) => request<T>(path, { ...options, method: "GET" }),
-  post: <T>(path: string, body?: any, options?: Omit<RequestOptions, "method" | "body">) => request<T>(path, { ...options, method: "POST", body }),
-  put: <T>(path: string, body?: any, options?: Omit<RequestOptions, "method" | "body">) => request<T>(path, { ...options, method: "PUT", body }),
-  patch: <T>(path: string, body?: any, options?: Omit<RequestOptions, "method" | "body">) => request<T>(path, { ...options, method: "PATCH", body }),
-  delete: <T>(path: string, options?: Omit<RequestOptions, "method" | "body">) => request<T>(path, { ...options, method: "DELETE" }),
+  get: <T>(path: string, options?: Omit<RequestOptions, "method" | "body">) =>
+    request<T>(path, { ...options, method: "GET" }),
+  post: <T>(path: string, body?: any, options?: Omit<RequestOptions, "method" | "body">) =>
+    request<T>(path, { ...options, method: "POST", body }),
+  put: <T>(path: string, body?: any, options?: Omit<RequestOptions, "method" | "body">) =>
+    request<T>(path, { ...options, method: "PUT", body }),
+  patch: <T>(path: string, body?: any, options?: Omit<RequestOptions, "method" | "body">) =>
+    request<T>(path, { ...options, method: "PATCH", body }),
+  delete: <T>(path: string, options?: Omit<RequestOptions, "method" | "body">) =>
+    request<T>(path, { ...options, method: "DELETE" }),
 };
 
 /**
@@ -77,12 +129,10 @@ export async function streamGenerate(
   signal?: AbortSignal,
   timeout: number = 120000
 ): Promise<void> {
-  const token = getAuthToken();
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
     "Accept": "text/event-stream",
   };
-  if (token) headers["Authorization"] = `Bearer ${token}`;
 
   // Create timeout abort controller
   const timeoutController = new AbortController();
@@ -101,7 +151,7 @@ export async function streamGenerate(
     : timeoutController.signal;
 
   try {
-    const response = await fetch(`${BASE_URL}/generate`, {
+    const response = await fetch(`${LLM_BASE_URL || AUTH_BASE_URL}/generate`, {
       method: "POST",
       headers,
       body: JSON.stringify({ prompt }),

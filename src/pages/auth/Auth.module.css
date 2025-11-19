@@ -62,3 +62,58 @@
 .link a:hover {
   text-decoration: underline;
 }
+
+.subtitle {
+  font-size: 1rem;
+  color: hsl(var(--muted-foreground));
+  text-align: center;
+  margin-bottom: 1rem;
+  line-height: 1.4;
+}
+
+.status {
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius);
+  border: 1px solid hsl(var(--border));
+  font-size: 0.95rem;
+  line-height: 1.4;
+  margin-bottom: 1rem;
+}
+
+.error {
+  background-color: hsl(0 84% 96%);
+  color: hsl(0 43% 31%);
+  border-color: hsl(0 84% 80%);
+}
+
+.success {
+  background-color: hsl(142 76% 97%);
+  color: hsl(142 43% 28%);
+  border-color: hsl(142 71% 45% / 0.4);
+}
+
+.info {
+  background-color: hsl(210 40% 96%);
+  color: hsl(215 16% 35%);
+  border-color: hsl(214 32% 80%);
+}
+
+.actionRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+  margin: 1.5rem 0 0.5rem;
+}
+
+.helperList {
+  margin: 1.5rem 0 0;
+  padding-left: 1.25rem;
+  color: hsl(var(--muted-foreground));
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.helperList li {
+  margin-bottom: 0.35rem;
+}
