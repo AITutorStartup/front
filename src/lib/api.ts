@@ -14,13 +14,7 @@ const RAW_AUTH_BASE_URL =
   import.meta.env.VITE_API_URL ||
   "/api";
 
-const RAW_LLM_BASE_URL =
-  import.meta.env.VITE_LLM_API_URL ||
-  import.meta.env.VITE_API_URL ||
-  RAW_AUTH_BASE_URL;
-
 const AUTH_BASE_URL = normalizeBaseUrl(RAW_AUTH_BASE_URL);
-const LLM_BASE_URL = normalizeBaseUrl(RAW_LLM_BASE_URL);
 
 type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
@@ -143,15 +137,15 @@ export async function streamGenerate(
   // Combine signals
   const combinedSignal = signal
     ? (() => {
-        const controller = new AbortController();
-        signal.addEventListener("abort", () => controller.abort());
-        timeoutController.signal.addEventListener("abort", () => controller.abort());
-        return controller.signal;
-      })()
+      const controller = new AbortController();
+      signal.addEventListener("abort", () => controller.abort());
+      timeoutController.signal.addEventListener("abort", () => controller.abort());
+      return controller.signal;
+    })()
     : timeoutController.signal;
 
   try {
-    const response = await fetch(`${LLM_BASE_URL || AUTH_BASE_URL}/generate`, {
+    const response = await fetch(`${AUTH_BASE_URL}/chat/stream`, {
       method: "POST",
       headers,
       body: JSON.stringify({ prompt }),
@@ -212,6 +206,22 @@ export async function streamGenerate(
     }
     throw error;
   }
+}
+
+export async function stopGeneration() {
+  return api.post("/chat/stop");
+}
+
+export async function changePassword(data: any) {
+  return api.post("/auth/change-password", data);
+}
+
+export async function resetPasswordRequest(email: string) {
+  return api.post("/auth/reset-password-request", { email });
+}
+
+export async function resetPasswordConfirm(data: any) {
+  return api.post("/auth/reset-password-confirm", data);
 }
 
 function processEvent(

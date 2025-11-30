@@ -7,7 +7,7 @@ import TypingIndicator from "@/components/TypingIndicator";
 import { SidebarProvider } from '@/context/SidebarContext';
 import SidebarTrigger from '@/components/common/SidebarTrigger';
 import { GraduationCap } from "lucide-react";
-import { streamGenerate } from "@/lib/api";
+import { streamGenerate, stopGeneration } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import styles from "./Index.module.css";
 
@@ -124,12 +124,12 @@ const Index = () => {
             prev.map((msg) =>
               msg.id === aiMessageId
                 ? {
-                    ...msg,
-                    content:
-                      error.name === "AbortError"
-                        ? "Запрос прерван пользователем."
-                        : `Ошибка: ${error.message}`,
-                  }
+                  ...msg,
+                  content:
+                    error.name === "AbortError"
+                      ? "Запрос прерван пользователем."
+                      : `Ошибка: ${error.message}`,
+                }
                 : msg
             )
           );
@@ -144,11 +144,16 @@ const Index = () => {
     }
   };
 
-  const handleCancel = () => {
+  const handleCancel = async () => {
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
       abortControllerRef.current = null;
       setIsTyping(false);
+      try {
+        await stopGeneration();
+      } catch (e) {
+        console.error("Failed to stop generation:", e);
+      }
     }
   };
 
@@ -193,8 +198,8 @@ const Index = () => {
 
     return (
       <>
-        <Link to="/verify-email" className={styles.authLink}>
-          Аккаунт
+        <Link to="/profile" className={styles.authLink}>
+          Профиль
         </Link>
         <button type="button" onClick={handleLogout} className={styles.authLink}>
           Выйти
@@ -260,8 +265,8 @@ const Index = () => {
                 <div ref={messagesEndRef} />
               </div>
             </div>
-            <ChatInput 
-              onSend={handleSendMessage} 
+            <ChatInput
+              onSend={handleSendMessage}
               disabled={isTyping}
               onCancel={handleCancel}
               showCancel={isTyping}

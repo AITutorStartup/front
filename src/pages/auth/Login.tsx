@@ -73,9 +73,14 @@ const Login = () => {
           />
           <Button type="submit" disabled={loading}>{loading ? "Вхожу..." : "Войти"}</Button>
         </form>
-        <p className={styles.link}>
-          Нет аккаунта? <Link to="/register">Зарегистрироваться</Link>
-        </p>
+        <div style={{ marginTop: "1rem", display: "flex", flexDirection: "column", gap: "0.5rem", alignItems: "flex-start" }}>
+          <p className={styles.link} style={{ textAlign: "left", margin: 0 }}>
+            Нет аккаунта? <Link to="/register" style={{ textDecoration: "none" }}>Зарегистрироваться</Link>
+          </p>
+          <Link to="/forgot-password" className={styles.link} style={{ fontSize: "0.9em", textAlign: "left", textDecoration: "none" }}>
+            Забыли пароль?
+          </Link>
+        </div>
       </div>
     </div>
   );
