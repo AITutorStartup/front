@@ -148,7 +148,7 @@ export async function streamGenerate(
     const response = await fetch(`${AUTH_BASE_URL}/chat/stream`, {
       method: "POST",
       headers,
-      body: JSON.stringify({ prompt }),
+      body: JSON.stringify({ message: prompt }),
       signal: combinedSignal,
       credentials: "include",
     });
@@ -213,15 +213,15 @@ export async function stopGeneration() {
 }
 
 export async function changePassword(data: any) {
-  return api.post("/auth/change-password", data);
+  return api.put("/users/change-password", data);
 }
 
 export async function resetPasswordRequest(email: string) {
-  return api.post("/auth/reset-password-request", { email });
+  return api.post("/auth/send-change-password-code", { email });
 }
 
 export async function resetPasswordConfirm(data: any) {
-  return api.post("/auth/reset-password-confirm", data);
+  return api.post("/auth/change-ps-email", data);
 }
 
 function processEvent(
@@ -249,7 +249,6 @@ function processBuffer(
         const data = JSON.parse(jsonStr);
         processEvent(data, onDelta, onMeta);
       } catch (e) {
-        // Ignore parse errors for incomplete data
       }
     }
   }

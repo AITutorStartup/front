@@ -8,6 +8,7 @@ import { SidebarProvider } from "@/context/SidebarContext";
 import ChatSidebar from "@/components/ChatSidebar";
 
 const Profile = () => {
+    const [email, setEmail] = useState("");
     const [oldPassword, setOldPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [loading, setLoading] = useState(false);
@@ -22,7 +23,7 @@ const Profile = () => {
         setError(null);
 
         try {
-            await changePassword({ old_password: oldPassword, new_password: newPassword });
+            await changePassword({ email, current_password: oldPassword, new_password: newPassword });
             setMessage("Пароль успешно изменен.");
             setOldPassword("");
             setNewPassword("");
@@ -54,6 +55,14 @@ const Profile = () => {
                                 {message && <div className={`${styles.status} ${styles.success}`}>{message}</div>}
                                 {error && <div className={`${styles.status} ${styles.error}`}>{error}</div>}
 
+                                <input
+                                    type="email"
+                                    placeholder="Ваш email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    className={styles.input}
+                                    required
+                                />
                                 <input
                                     type="password"
                                     placeholder="Старый пароль"
