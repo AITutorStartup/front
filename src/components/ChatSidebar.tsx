@@ -1,8 +1,7 @@
-// src/components/ChatSidebar.tsx
 
 import { useState } from "react";
 import { MessageSquare, Plus } from "lucide-react";
-import { useSidebar } from "@/context/SidebarContext"; // 1. Импортируем наш хук
+import { useSidebar } from "@/context/SidebarContext";
 import styles from "./ChatSidebar.module.css";
 
 interface Session {

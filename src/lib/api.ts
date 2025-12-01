@@ -229,10 +229,25 @@ function processEvent(
   onDelta: (text: string) => void,
   onMeta?: (meta: any) => void
 ) {
-  if (data.type === "delta" && data.text) {
-    onDelta(data.text);
-  } else if (data.type === "meta" && onMeta) {
-    onMeta(data);
+  switch (data.type) {
+    case "start":
+      onMeta?.({ type: "start", message_id: data.message_id });
+      break;
+    case "chunk":
+      if (data.text) {
+        onDelta(data.text);
+      }
+      break;
+    case "end":
+      onMeta?.({ type: "end", full_response: data.full_response });
+      break;
+    case "error":
+      throw new Error(data.message || "Unknown stream error");
+    case "cancelled":
+      onMeta?.({ type: "cancelled" });
+      break;
+    default:
+      console.warn("Unknown event type:", data.type);
   }
 }
 
@@ -249,9 +264,8 @@ function processBuffer(
         const data = JSON.parse(jsonStr);
         processEvent(data, onDelta, onMeta);
       } catch (e) {
+        // Ignore parse errors for incomplete data
       }
     }
   }
 }
-
-

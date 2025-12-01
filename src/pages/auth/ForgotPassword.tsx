@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Button from "@/components/common/Button";
 import styles from "./Auth.module.css";
 import { resetPasswordRequest } from "@/lib/api";
@@ -10,6 +10,8 @@ const ForgotPassword = () => {
     const [message, setMessage] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
 
+    const navigate = useNavigate();
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
@@ -18,7 +20,8 @@ const ForgotPassword = () => {
 
         try {
             await resetPasswordRequest(email);
-            setMessage("Если аккаунт с такой почтой существует, мы отправили инструкцию по сбросу пароля.");
+            setMessage("Код отправлен на вашу почту.");
+            setTimeout(() => navigate(`/reset-password?email=${encodeURIComponent(email)}`), 1500);
         } catch (err: any) {
             setError(err.message || "Произошла ошибка при отправке запроса.");
         } finally {

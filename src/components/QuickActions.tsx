@@ -1,7 +1,7 @@
-// QuickActions.tsx (версия с CSS-модулями)
+
 
 import { BookOpen, FileText, CheckCircle } from "lucide-react";
-import styles from "./QuickActions.module.css"; 
+import styles from "./QuickActions.module.css";
 
 interface QuickActionsProps {
   onAction: (action: string) => void;

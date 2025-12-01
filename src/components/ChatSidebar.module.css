@@ -1,11 +1,9 @@
-/* ChatSidebar.module.css */
-
 .sidebar {
   border-right: 1px solid hsl(var(--sidebar-border));
   background-color: hsl(var(--sidebar-background));
   display: flex;
   flex-direction: column;
-  width: 280px; /* Зададим фиксированную ширину для сайдбара */
+  width: 280px;
   flex-shrink: 0;
 }
 

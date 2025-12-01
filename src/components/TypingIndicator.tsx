@@ -1,7 +1,7 @@
-// TypingIndicator.tsx (версия с CSS-модулями)
+
 
 import { Bot } from "lucide-react";
-import styles from "./TypingIndicator.module.css"; // Импортируем стили
+import styles from "./TypingIndicator.module.css";
 
 const TypingIndicator = () => {
   return (
