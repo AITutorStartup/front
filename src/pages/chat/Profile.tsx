@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Button from "@/components/common/Button";
+import Button from "@/components/ui/button";
 import { changePassword } from "@/lib/api";
 import styles from "./auth/Auth.module.css";
-import SidebarTrigger from "@/components/common/SidebarTrigger";
+import SidebarTrigger from "@/components/layout/SidebarTrigger";
 import { SidebarProvider } from "@/context/SidebarContext";
-import ChatSidebar from "@/components/ChatSidebar";
+import ChatSidebar from "@/components/chat/ChatSidebar";
 
 const Profile = () => {
     const [email, setEmail] = useState("");

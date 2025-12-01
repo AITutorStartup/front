@@ -1,11 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import ChatSidebar from "@/components/ChatSidebar";
-import ChatMessage from "@/components/ChatMessage";
-import ChatInput from "@/components/ChatInput";
-import TypingIndicator from "@/components/TypingIndicator";
+import ChatSidebar from "@/components/chat/ChatSidebar";
+import ChatMessage from "@/components/chat/ChatMessage";
+import ChatInput from "@/components/chat/ChatInput";
+import TypingIndicator from "@/components/chat/TypingIndicator";
 import { SidebarProvider } from '@/context/SidebarContext';
-import SidebarTrigger from '@/components/common/SidebarTrigger';
+import SidebarTrigger from '@/components/layout/SidebarTrigger';
 import { GraduationCap } from "lucide-react";
 import { streamGenerate } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
@@ -17,11 +17,11 @@ interface Message {
   isUser: boolean;
 }
 
-const Theory = () => {
+const Practice = () => {
   const [currentSessionId, setCurrentSessionId] = useState("1");
-  const mode: 'theory' = 'theory';
+  const mode: 'practice' = 'practice';
 
-  const getWelcomeByMode = () => 'Присылай тему, которую не понял, или вопрос — помогу разобраться.';
+  const getWelcomeByMode = () => 'Готов решить пару задач по пройденной теме.';
 
   const [messages, setMessages] = useState<Message[]>([
     { id: "1", content: getWelcomeByMode(), isUser: false },
@@ -160,10 +160,10 @@ const Theory = () => {
             <div className={styles.authLinks}>{renderAuthActions()}</div>
           </header>
           <nav className={styles.topModeBar} aria-label="Режим">
-            <div className={`${styles.topModeGroup} ${styles.isTheory}`} role="tablist">
+            <div className={`${styles.topModeGroup} ${styles.isPractice}`} role="tablist">
               <span className={styles.modeSlider} aria-hidden="true" />
-              <Link to="/theory" role="tab" aria-selected className={`${styles.modeLink} ${styles.modeLinkActive}`}>Теория</Link>
-              <Link to="/practice" role="tab" aria-selected={false} className={styles.modeLink}>Практика</Link>
+              <Link to="/theory" role="tab" aria-selected={false} className={styles.modeLink}>Теория</Link>
+              <Link to="/practice" role="tab" aria-selected className={`${styles.modeLink} ${styles.modeLinkActive}`}>Практика</Link>
             </div>
           </nav>
           <main className={styles.chatArea}>
@@ -189,6 +189,6 @@ const Theory = () => {
   );
 };
 
-export default Theory;
+export default Practice;
 
 

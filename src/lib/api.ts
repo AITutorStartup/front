@@ -121,7 +121,7 @@ export async function streamGenerate(
   onDone?: () => void,
   onError?: (error: Error) => void,
   signal?: AbortSignal,
-  timeout: number = 120000
+  timeout: number = 600000
 ): Promise<void> {
   const headers: Record<string, string> = {
     "Content-Type": "application/json",

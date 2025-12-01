@@ -1,11 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import ChatSidebar from "@/components/ChatSidebar";
-import ChatMessage from "@/components/ChatMessage";
-import ChatInput from "@/components/ChatInput";
-import TypingIndicator from "@/components/TypingIndicator";
+import ChatSidebar from "@/components/chat/ChatSidebar";
+import ChatMessage from "@/components/chat/ChatMessage";
+import ChatInput from "@/components/chat/ChatInput";
+import TypingIndicator from "@/components/chat/TypingIndicator";
 import { SidebarProvider } from '@/context/SidebarContext';
-import SidebarTrigger from '@/components/common/SidebarTrigger';
+import SidebarTrigger from '@/components/layout/SidebarTrigger';
 import { GraduationCap } from "lucide-react";
 import { streamGenerate, stopGeneration } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
