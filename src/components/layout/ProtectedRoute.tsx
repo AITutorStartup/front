@@ -7,9 +7,16 @@ interface ProtectedRouteProps {
   children: ReactElement;
 }
 
+import { DISABLE_ROUTE_PROTECTION } from "@/config/dev";
+
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { isAuthenticated, isChecking } = useAuth();
   const location = useLocation();
+
+  // В режиме без защиты просто возвращаем children
+  if (DISABLE_ROUTE_PROTECTION) {
+    return children;
+  }
 
   if (isChecking) {
     return (

@@ -58,37 +58,56 @@ const parseResponse = async (response: Response) => {
   return text || null;
 };
 
+import { DISABLE_BACKEND } from "@/config/dev";
+
 async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
+  // В режиме без бэкенда возвращаем пустые ответы для GET и успешные для POST
+  if (DISABLE_BACKEND) {
+    if (options.method === "GET") {
+      return {} as T;
+    }
+    // Для POST/PUT/PATCH возвращаем успешный ответ
+    return {} as T;
+  }
+
   const isFormData = options.body instanceof FormData;
   const headers: Record<string, string> = {
     ...(!isFormData ? { "Content-Type": "application/json" } : {}),
     ...options.headers,
   };
 
-  const response = await fetch(`${AUTH_BASE_URL}${normalizePath(path)}`, {
-    method: options.method || "GET",
-    headers,
-    body:
-      options.body === undefined || isFormData
-        ? options.body
-        : JSON.stringify(options.body),
-    signal: options.signal,
-    credentials: "include",
-  });
+  try {
+    const response = await fetch(`${AUTH_BASE_URL}${normalizePath(path)}`, {
+      method: options.method || "GET",
+      headers,
+      body:
+        options.body === undefined || isFormData
+          ? options.body
+          : JSON.stringify(options.body),
+      signal: options.signal,
+      credentials: "include",
+    });
 
-  const data = await parseResponse(response);
+    const data = await parseResponse(response);
 
-  if (!response.ok) {
-    const message =
-      (data && typeof data === "object" && "detail" in data && (data as any).detail) ||
-      (data && typeof data === "object" && "message" in data && (data as any).message) ||
-      (typeof data === "string" && data) ||
-      response.statusText;
+    if (!response.ok) {
+      const message =
+        (data && typeof data === "object" && "detail" in data && (data as any).detail) ||
+        (data && typeof data === "object" && "message" in data && (data as any).message) ||
+        (typeof data === "string" && data) ||
+        response.statusText;
 
-    throw new ApiError(String(message || "Request failed"), response.status, data);
+      throw new ApiError(String(message || "Request failed"), response.status, data);
+    }
+
+    return data as T;
+  } catch (error) {
+    // Если это ошибка сети и бэкенд отключен, просто возвращаем пустой ответ
+    if (DISABLE_BACKEND && error instanceof TypeError) {
+      return {} as T;
+    }
+    throw error;
   }
-
-  return data as T;
 }
 
 export const api = {

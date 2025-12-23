@@ -3,72 +3,213 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  padding: 1rem;
-  background-color: hsl(var(--muted)); 
+  padding: 2rem;
+  background: hsl(var(--muted));
+  position: relative;
+  overflow: hidden;
 }
 
-.formWrapper {
+.splitContainer {
+  display: flex;
   width: 100%;
-  max-width: 400px;
-  padding: 2rem;
-  border-radius: var(--radius);
-  background-color: hsl(var(--background));
-  border: 1px solid hsl(var(--border));
-  box-shadow: var(--shadow-soft);
+  max-width: 900px;
+  height: 600px;
+  background: hsl(var(--background));
+  border-radius: 20px;
+  box-shadow: 0 20px 60px hsl(var(--foreground) / 0.15);
+  overflow: hidden;
+  position: relative;
+}
+
+/* Form Panel - White background */
+.formPanel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 3rem 4rem;
+  background: hsl(var(--background));
+  position: relative;
+  z-index: 2;
+  transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.formPanel.leftPanel {
+  order: 1;
+}
+
+.formPanel.rightPanel {
+  order: 2;
+}
+
+.splitContainer.registerMode .formPanel.leftPanel {
+  order: 2;
+}
+
+.splitContainer.registerMode .formPanel.rightPanel {
+  order: 1;
+}
+
+/* Welcome Panel - Colored background */
+.welcomePanel {
+  flex: 0 0 40%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem;
+  background: var(--gradient-primary);
+  position: relative;
+  z-index: 1;
+  transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.welcomePanel.leftPanel {
+  order: 1;
+  clip-path: polygon(0 0, 100% 0, 85% 100%, 0 100%);
+}
+
+.welcomePanel.rightPanel {
+  order: 2;
+  clip-path: polygon(15% 0, 100% 0, 100% 100%, 0 100%);
+}
+
+.splitContainer.registerMode .welcomePanel.leftPanel {
+  order: 1;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 15% 100%);
+}
+
+.splitContainer.registerMode .welcomePanel.rightPanel {
+  order: 2;
+  clip-path: polygon(0 0, 85% 0, 100% 100%, 0 100%);
+}
+
+.welcomeContent {
+  text-align: center;
+  color: white;
+  z-index: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.welcomeTitle {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: white;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.welcomeText {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: 2.5rem;
+  color: rgba(255, 255, 255, 0.9);
+  max-width: 300px;
+  text-align: center;
+}
+
+.toggleButton {
+  padding: 14px 40px;
+  background: transparent;
+  border: 2px solid white;
+  border-radius: 50px;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.toggleButton:hover {
+  background: white;
+  color: hsl(var(--primary));
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
 .title {
-  font-size: 1.75rem;
-  font-weight: 600;
-  text-align: center;
-  margin-bottom: 1.5rem;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 2.5rem;
   color: hsl(var(--foreground));
+  text-align: left;
 }
 
 .form {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.25rem;
+  width: 100%;
+}
+
+.inputGroup {
+  position: relative;
 }
 
 .input {
-  padding: 0.75rem 1rem;
+  width: 100%;
+  padding: 1rem 1.25rem;
   font-size: 1rem;
-  border-radius: var(--radius);
+  border-radius: 8px;
   border: 1px solid hsl(var(--input));
   background-color: hsl(var(--background));
   color: hsl(var(--foreground));
-  transition: border-color 0.2s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: inherit;
+}
+
+.input::placeholder {
+  color: hsl(var(--muted-foreground));
 }
 
 .input:focus {
-  outline: 2px solid hsl(var(--ring));
-  outline-offset: 2px;
-  border-color: transparent;
+  outline: none;
+  border-color: hsl(var(--primary));
+  box-shadow: 0 0 0 3px hsl(var(--primary) / 0.1);
 }
 
-.link {
-  text-align: center;
+.forgotLink {
+  text-align: right;
   font-size: 0.875rem;
   color: hsl(var(--muted-foreground));
-}
-
-.link a {
-  color: hsl(var(--primary));
   text-decoration: none;
-  font-weight: 500;
+  margin-top: -0.5rem;
+  margin-bottom: 0.5rem;
+  transition: color 0.2s ease;
 }
 
-.link a:hover {
+.forgotLink:hover {
+  color: hsl(var(--primary));
   text-decoration: underline;
 }
 
-.subtitle {
+.submitButton {
+  margin-top: 1rem;
+  width: 100%;
+  padding: 1rem;
   font-size: 1rem;
-  color: hsl(var(--muted-foreground));
-  text-align: center;
-  margin-bottom: 1rem;
-  line-height: 1.4;
+  font-weight: 600;
+  border-radius: 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.submitButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px hsl(var(--primary) / 0.3);
+}
+
+.submitButton:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .status {
@@ -98,22 +239,75 @@
   border-color: hsl(214 32% 80%);
 }
 
-.actionRow {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  justify-content: center;
-  margin: 1.5rem 0 0.5rem;
+/* Responsive Design */
+@media (max-width: 768px) {
+  .authContainer {
+    padding: 1rem;
+  }
+
+  .splitContainer {
+    flex-direction: column;
+    height: auto;
+    max-width: 500px;
+  }
+
+  .formPanel {
+    padding: 2.5rem 2rem;
+    order: 1 !important;
+  }
+
+  .welcomePanel {
+    flex: 0 0 auto;
+    padding: 2.5rem 2rem;
+    order: 2 !important;
+    clip-path: none !important;
+  }
+
+  .welcomePanel.leftPanel,
+  .welcomePanel.rightPanel {
+    clip-path: none !important;
+  }
+
+  .splitContainer.registerMode .welcomePanel {
+    order: 2 !important;
+    clip-path: none !important;
+  }
+
+  .title {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .welcomeTitle {
+    font-size: 1.5rem;
+    white-space: nowrap;
+  }
+
+  .welcomeText {
+    font-size: 0.9rem;
+    max-width: 100%;
+  }
 }
 
-.helperList {
-  margin: 1.5rem 0 0;
-  padding-left: 1.25rem;
-  color: hsl(var(--muted-foreground));
-  font-size: 0.9rem;
-  line-height: 1.4;
-}
+@media (max-width: 480px) {
+  .formPanel {
+    padding: 2rem 1.5rem;
+  }
 
-.helperList li {
-  margin-bottom: 0.35rem;
+  .welcomePanel {
+    padding: 2rem 1.5rem;
+  }
+
+  .title {
+    font-size: 1.75rem;
+  }
+
+  .welcomeTitle {
+    font-size: 1.4rem;
+    white-space: nowrap;
+  }
+
+  .welcomeText {
+    font-size: 0.85rem;
+  }
 }

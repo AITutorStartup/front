@@ -1,4 +1,11 @@
-
+/**
+ * TypingIndicator Component - Modern Redesign
+ * 
+ * Key changes:
+ * - Subtle, minimalistic typing animation
+ * - Smooth fade-in appearance
+ * - Better alignment with message layout
+ */
 
 import { Bot } from "lucide-react";
 import styles from "./TypingIndicator.module.css";
@@ -6,14 +13,15 @@ import styles from "./TypingIndicator.module.css";
 const TypingIndicator = () => {
   return (
     <div className={styles.wrapper}>
-      <div className={styles.avatar}>
-        <Bot className={styles.icon} />
+      <div className={styles.avatarContainer}>
+        <div className={styles.avatar}>
+          <Bot className={styles.icon} size={16} />
+        </div>
       </div>
       <div className={styles.dotsContainer}>
-        {/* Применяем классы для каждой точки */}
-        <div className={`${styles.dot} ${styles.dot1}`}></div>
-        <div className={`${styles.dot} ${styles.dot2}`}></div>
-        <div className={styles.dot}></div>
+        <span className={styles.dot}></span>
+        <span className={styles.dot}></span>
+        <span className={styles.dot}></span>
       </div>
     </div>
   );

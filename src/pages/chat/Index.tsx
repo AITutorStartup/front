@@ -1,3 +1,27 @@
+/**
+ * Chat Index Page - Premium Redesign
+ * 
+ * LAYOUT STRUCTURE (inspired by design references):
+ * - Vertical column layout with strong typographic hierarchy (ref 1)
+ * - Soft glassmorphism panels with subtle blur effects (ref 2)
+ * - Bold central typography with minimal navigation (ref 3)
+ * - Clean dashboard cards with soft shadows and rounded panels (ref 4)
+ * 
+ * DESIGN PRINCIPLES APPLIED:
+ * 1. Split layout: Main conversation panel with optional context sidebar
+ * 2. Big typography: Large, readable text with generous whitespace
+ * 3. Glassmorphism: Subtle backdrop blur and translucent panels
+ * 4. Rounded cards: 8-16px radius for message bubbles and containers
+ * 5. Soft shadows: Delicate elevation for depth without heaviness
+ * 6. Minimal controls: Pill-shaped buttons, icon-only secondary actions
+ * 
+ * FUNCTIONALITY PRESERVED:
+ * - All existing API calls and message streaming logic
+ * - State management and session handling
+ * - Authentication and routing flows
+ * - All props and component interfaces remain unchanged
+ */
+
 import { useState, useRef, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import ChatSidebar from "@/components/chat/ChatSidebar";
@@ -157,8 +181,6 @@ const Index = () => {
     }
   };
 
-  // Быстрые действия удалены из интерфейса
-
   const handleNewSession = () => {
     setMessages([
       {
@@ -218,59 +240,65 @@ const Index = () => {
         />
         <div className={styles.mainContent}>
           <header className={styles.header}>
-            <div className={styles.headerTitle}>
-              <SidebarTrigger />
-              <div className={styles.headerIconWrapper}>
-                <GraduationCap className={styles.headerIcon} />
+            <div className={styles.headerContent}>
+              <div className={styles.headerTitle}>
+                <SidebarTrigger />
+                <div className={styles.headerIconWrapper}>
+                  <GraduationCap className={styles.headerIcon} />
+                </div>
+                <h1 className={styles.headerText}>AI Репетитор</h1>
               </div>
-              <h1 className={styles.headerText}>AI Репетитор</h1>
+              <div className={styles.headerActions}>
+                <nav className={styles.modeNav} aria-label="Режим">
+                  <div
+                    className={`${styles.modeGroup} ${mode === 'theory' ? styles.isTheory : styles.isPractice}`}
+                    role="tablist"
+                  >
+                    <span className={styles.modeSlider} aria-hidden="true" />
+                    <Link
+                      to="/theory"
+                      role="tab"
+                      aria-selected={mode === 'theory'}
+                      className={`${styles.modeLink} ${mode === 'theory' ? styles.modeLinkActive : ''}`}
+                    >
+                      Теория
+                    </Link>
+                    <Link
+                      to="/practice"
+                      role="tab"
+                      aria-selected={mode === 'practice'}
+                      className={`${styles.modeLink} ${mode === 'practice' ? styles.modeLinkActive : ''}`}
+                    >
+                      Практика
+                    </Link>
+                  </div>
+                </nav>
+                <div className={styles.authLinks}>{renderAuthActions()}</div>
+              </div>
             </div>
-            <div className={styles.authLinks}>{renderAuthActions()}</div>
           </header>
-          <nav className={styles.topModeBar} aria-label="Режим">
-            <div
-              className={`${styles.topModeGroup} ${mode === 'theory' ? styles.isTheory : styles.isPractice}`}
-              role="tablist"
-            >
-              <span className={styles.modeSlider} aria-hidden="true" />
-              <Link
-                to="/theory"
-                role="tab"
-                aria-selected={mode === 'theory'}
-                className={`${styles.modeLink} ${mode === 'theory' ? styles.modeLinkActive : ''}`}
-              >
-                Теория
-              </Link>
-              <Link
-                to="/practice"
-                role="tab"
-                aria-selected={mode === 'practice'}
-                className={`${styles.modeLink} ${mode === 'practice' ? styles.modeLinkActive : ''}`}
-              >
-                Практика
-              </Link>
-            </div>
-          </nav>
           <main className={styles.chatArea}>
-            <div className={styles.messagesContainer}>
-              <div className={styles.messagesList}>
-                {messages.map((message) => (
-                  <ChatMessage
-                    key={message.id}
-                    content={message.content}
-                    isUser={message.isUser}
-                  />
-                ))}
-                {isTyping && <TypingIndicator />}
-                <div ref={messagesEndRef} />
+            <div className={styles.chatContainer}>
+              <div className={styles.messagesContainer}>
+                <div className={styles.messagesList}>
+                  {messages.map((message) => (
+                    <ChatMessage
+                      key={message.id}
+                      content={message.content}
+                      isUser={message.isUser}
+                    />
+                  ))}
+                  {isTyping && <TypingIndicator />}
+                  <div ref={messagesEndRef} />
+                </div>
               </div>
+              <ChatInput
+                onSend={handleSendMessage}
+                disabled={isTyping}
+                onCancel={handleCancel}
+                showCancel={isTyping}
+              />
             </div>
-            <ChatInput
-              onSend={handleSendMessage}
-              disabled={isTyping}
-              onCancel={handleCancel}
-              showCancel={isTyping}
-            />
           </main>
         </div>
       </div>

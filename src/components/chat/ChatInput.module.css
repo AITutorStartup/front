@@ -1,96 +1,170 @@
+/**
+ * Premium Input Styling - Glassmorphism with soft shadows
+ * 
+ * Design principles:
+ * - Fixed bottom input with glassmorphism (ref 2)
+ * - Primary send button with pill shape (ref 3)
+ * - Smooth focus transitions
+ * - Clean, minimal secondary controls
+ */
+
 .wrapper {
-  border-top: 1px solid hsl(var(--border));
-  background-color: hsl(var(--background));
-  padding: 1rem;
+  border-top: 1px solid hsl(var(--border) / 0.3);
+  background: hsl(var(--background) / 0.4);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 1.5rem;
+  position: relative;
+  z-index: 10;
 }
 
 .container {
-  margin-left: auto;
-  margin-right: auto;
-  max-width: 56rem; 
+  max-width: 48rem;
+  margin: 0 auto;
 }
 
-.form {
+.inputContainer {
   display: flex;
-  gap: 0.5rem; 
+  align-items: flex-end;
+  gap: 0.875rem;
+  background: hsl(var(--background) / 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1.5px solid hsl(var(--border) / 0.4);
+  border-radius: 16px;
+  padding: 1rem 1.25rem;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 
+    0 4px 16px hsl(var(--foreground) / 0.04),
+    inset 0 1px 0 hsl(var(--background) / 0.8);
+}
+
+.inputContainer:focus-within {
+  border-color: hsl(var(--primary) / 0.6);
+  box-shadow: 
+    0 0 0 4px hsl(var(--primary) / 0.1),
+    0 6px 24px hsl(var(--foreground) / 0.08),
+    inset 0 1px 0 hsl(var(--background) / 0.8);
+  transform: translateY(-1px);
 }
 
 .textarea {
-  flex-grow: 1;
-  min-height: 60px;
+  flex: 1;
+  min-height: 28px;
   max-height: 200px;
   resize: none;
-  padding: 0.75rem 1rem;
-  border-radius: var(--radius);
-  border: 1px solid hsl(var(--input));
-  background-color: hsl(var(--background));
+  border: none;
+  background: transparent;
   color: hsl(var(--foreground));
   font-family: inherit;
   font-size: 1rem;
+  line-height: 1.6;
+  padding: 0;
+  outline: none;
+  overflow-y: auto;
 }
 
-.textarea:focus {
-  outline: 2px solid hsl(var(--ring));
-  outline-offset: 2px;
+.textarea::placeholder {
+  color: hsl(var(--muted-foreground));
 }
 
 .textarea:disabled {
+  opacity: 0.6;
   cursor: not-allowed;
-  opacity: 0.5;
 }
 
+/* Actions container */
+.actions {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* Send button - primary pill shape */
 .sendButton {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 60px;
-  width: 60px;
-  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
   border: none;
-  border-radius: var(--radius);
+  border-radius: 12px;
+  background: var(--gradient-primary);
   color: hsl(var(--primary-foreground));
   cursor: pointer;
-  
-
-  background: var(--gradient-primary);
-  
-  transition: opacity 0.2s ease-in-out;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  flex-shrink: 0;
+  box-shadow: 
+    0 4px 12px hsl(var(--primary) / 0.3),
+    0 1px 4px hsl(var(--primary) / 0.2);
 }
 
-.sendButton:hover {
-  opacity: 0.9;
+.sendButton:hover:not(:disabled) {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 
+    0 6px 16px hsl(var(--primary) / 0.4),
+    0 2px 6px hsl(var(--primary) / 0.3);
+}
+
+.sendButton:active:not(:disabled) {
+  transform: translateY(0) scale(0.97);
+  box-shadow: 
+    0 2px 8px hsl(var(--primary) / 0.25),
+    0 1px 3px hsl(var(--primary) / 0.2);
 }
 
 .sendButton:disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: not-allowed;
+  transform: none;
 }
 
-.sendIcon {
-  height: 1.25rem;
-  width: 1.25rem;  
-}
-
+/* Cancel button - secondary action */
 .cancelButton {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 60px;
-  width: 60px;
-  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
   border: none;
-  border-radius: var(--radius);
+  border-radius: 12px;
+  background: hsl(var(--destructive));
   color: hsl(var(--destructive-foreground));
   cursor: pointer;
-  background: hsl(var(--destructive));
-  transition: opacity 0.2s ease-in-out;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px hsl(var(--destructive) / 0.25);
 }
 
 .cancelButton:hover {
-  opacity: 0.9;
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 6px 16px hsl(var(--destructive) / 0.35);
 }
 
-.cancelIcon {
-  height: 1.25rem;
-  width: 1.25rem;
+.cancelButton:active {
+  transform: translateY(0) scale(0.97);
+  box-shadow: 0 2px 8px hsl(var(--destructive) / 0.3);
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .wrapper {
+    padding: 1.25rem 1rem;
+  }
+
+  .inputContainer {
+    padding: 0.875rem 1rem;
+    gap: 0.75rem;
+    border-radius: 14px;
+  }
+
+  .textarea {
+    font-size: 0.9375rem;
+  }
+
+  .sendButton,
+  .cancelButton {
+    width: 40px;
+    height: 40px;
+  }
 }

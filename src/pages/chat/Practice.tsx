@@ -150,38 +150,44 @@ const Practice = () => {
         />
         <div className={styles.mainContent}>
           <header className={styles.header}>
-            <div className={styles.headerTitle}>
-              <SidebarTrigger />
-              <div className={styles.headerIconWrapper}>
-                <GraduationCap className={styles.headerIcon} />
+            <div className={styles.headerContent}>
+              <div className={styles.headerTitle}>
+                <SidebarTrigger />
+                <div className={styles.headerIconWrapper}>
+                  <GraduationCap className={styles.headerIcon} />
+                </div>
+                <h1 className={styles.headerText}>AI Репетитор</h1>
               </div>
-              <h1 className={styles.headerText}>AI Репетитор</h1>
+              <div className={styles.headerActions}>
+                <nav className={styles.modeNav} aria-label="Режим">
+                  <div className={`${styles.modeGroup} ${styles.isPractice}`} role="tablist">
+                    <span className={styles.modeSlider} aria-hidden="true" />
+                    <Link to="/theory" role="tab" aria-selected={false} className={styles.modeLink}>Теория</Link>
+                    <Link to="/practice" role="tab" aria-selected className={`${styles.modeLink} ${styles.modeLinkActive}`}>Практика</Link>
+                  </div>
+                </nav>
+                <div className={styles.authLinks}>{renderAuthActions()}</div>
+              </div>
             </div>
-            <div className={styles.authLinks}>{renderAuthActions()}</div>
           </header>
-          <nav className={styles.topModeBar} aria-label="Режим">
-            <div className={`${styles.topModeGroup} ${styles.isPractice}`} role="tablist">
-              <span className={styles.modeSlider} aria-hidden="true" />
-              <Link to="/theory" role="tab" aria-selected={false} className={styles.modeLink}>Теория</Link>
-              <Link to="/practice" role="tab" aria-selected className={`${styles.modeLink} ${styles.modeLinkActive}`}>Практика</Link>
-            </div>
-          </nav>
           <main className={styles.chatArea}>
-            <div className={styles.messagesContainer}>
-              <div className={styles.messagesList}>
-                {messages.map((message) => (
-                  <ChatMessage key={message.id} content={message.content} isUser={message.isUser} />
-                ))}
-                {isTyping && <TypingIndicator />}
-                <div ref={messagesEndRef} />
+            <div className={styles.chatContainer}>
+              <div className={styles.messagesContainer}>
+                <div className={styles.messagesList}>
+                  {messages.map((message) => (
+                    <ChatMessage key={message.id} content={message.content} isUser={message.isUser} />
+                  ))}
+                  {isTyping && <TypingIndicator />}
+                  <div ref={messagesEndRef} />
+                </div>
               </div>
+              <ChatInput 
+                onSend={handleSendMessage} 
+                disabled={isTyping}
+                onCancel={handleCancel}
+                showCancel={isTyping}
+              />
             </div>
-            <ChatInput 
-              onSend={handleSendMessage} 
-              disabled={isTyping}
-              onCancel={handleCancel}
-              showCancel={isTyping}
-            />
           </main>
         </div>
       </div>
