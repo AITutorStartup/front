@@ -1,0 +1,105 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.topThreeSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.restSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.myPositionSticky {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  position: sticky;
+  bottom: 0;
+  background: hsl(var(--background));
+  z-index: 10;
+}
+
+.stickyDivider {
+  height: 1px;
+  background: hsl(var(--border));
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.stickyDivider::before {
+  content: "Ваша позиция";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: -0.5rem;
+  background: hsl(var(--background));
+  padding: 0 0.75rem;
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.skeletonRow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: hsl(var(--background));
+  border: 1px solid hsl(var(--border) / 0.5);
+  border-radius: 12px;
+}
+
+.skeletonRank,
+.skeletonAvatar,
+.skeletonName,
+.skeletonXp {
+  background: linear-gradient(
+    90deg,
+    hsl(var(--muted)) 0%,
+    hsl(var(--muted) / 0.5) 50%,
+    hsl(var(--muted)) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 6px;
+}
+
+.skeletonRank {
+  width: 40px;
+  height: 20px;
+}
+
+.skeletonAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.skeletonName {
+  flex: 1;
+  height: 20px;
+}
+
+.skeletonXp {
+  width: 60px;
+  height: 20px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+

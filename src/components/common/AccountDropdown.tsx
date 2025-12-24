@@ -59,6 +59,9 @@ const AccountDropdown = () => {
           <Link to="/about-study" className={styles.dropdownItem}>
             Об учебе
           </Link>
+          <Link to="/leaderboard" className={styles.dropdownItem}>
+            Таблица лидеров
+          </Link>
           <Link to="/settings" className={styles.dropdownItem}>
             Настройки
           </Link>

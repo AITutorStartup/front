@@ -12,9 +12,11 @@ import Profile from "./pages/chat/Profile";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import ResetPassword from "./pages/auth/ResetPassword";
 import StudyDashboard from "./pages/study/StudyDashboard";
+import Leaderboard from "./pages/leaderboard/Leaderboard";
 import { SidebarProvider } from "./context/SidebarContext";
 import ProtectedRoute from "./components/layout/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
+import { XpProvider } from "./features/xp/xpStore";
 
 const queryClient = new QueryClient();
 
@@ -22,7 +24,8 @@ const App = () => (
   <SidebarProvider>
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <BrowserRouter>
+        <XpProvider>
+          <BrowserRouter>
           <Routes>
             <Route path="/" element={<Welcome />} />
             <Route
@@ -74,6 +77,14 @@ const App = () => (
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/leaderboard"
+              element={
+                <ProtectedRoute>
+                  <Leaderboard />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -81,6 +92,7 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
+        </XpProvider>
       </AuthProvider>
     </QueryClientProvider>
   </SidebarProvider>

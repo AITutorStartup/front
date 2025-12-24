@@ -10,6 +10,9 @@ import { GraduationCap } from "lucide-react";
 import { streamGenerate } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import AccountDropdown from "@/components/common/AccountDropdown";
+import XpIndicator from "@/components/xp/XpIndicator";
+import XpToastManager from "@/components/xp/XpToastManager";
+import { useXp } from "@/features/xp/xpStore";
 import styles from "./Index.module.css";
 
 interface Message {
@@ -32,12 +35,27 @@ const Theory = () => {
   const abortControllerRef = useRef<AbortController | null>(null);
   const navigate = useNavigate();
   const { isAuthenticated, isChecking, logout } = useAuth();
+  const { awardXp } = useXp();
+  const sessionStartTimeRef = useRef<number | null>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => { scrollToBottom(); }, [messages, isTyping]);
+
+  // Track session start for XP
+  useEffect(() => {
+    sessionStartTimeRef.current = Date.now();
+    return () => {
+      if (sessionStartTimeRef.current) {
+        const duration = (Date.now() - sessionStartTimeRef.current) / 1000 / 60;
+        if (duration >= 5) {
+          awardXp("session_finished", { sessionDuration: duration });
+        }
+      }
+    };
+  }, [awardXp]);
 
   const handleSendMessage = async (content: string) => {
     if (abortControllerRef.current) {
@@ -70,6 +88,8 @@ const Theory = () => {
         () => {
           setIsTyping(false);
           abortControllerRef.current = null;
+          // Award XP for reading explanation
+          awardXp("explain_read", { messageId: aiMessageId });
         },
         (error) => {
           console.error("Stream error:", error);
@@ -157,9 +177,10 @@ const Theory = () => {
                 <div className={styles.headerIconWrapper}>
                   <GraduationCap className={styles.headerIcon} />
                 </div>
-                <h1 className={styles.headerText}>AI Репетитор</h1>
+                <h1 className={styles.headerText}>T-ASK</h1>
               </div>
               <div className={styles.headerActions}>
+                <XpIndicator />
                 <nav className={styles.modeNav} aria-label="Режим">
                   <div className={`${styles.modeGroup} ${styles.isTheory}`} role="tablist">
                     <span className={styles.modeSlider} aria-hidden="true" />
@@ -191,6 +212,7 @@ const Theory = () => {
             </div>
           </main>
         </div>
+        <XpToastManager />
       </div>
     </SidebarProvider>
   );

@@ -1,0 +1,228 @@
+/**
+ * Leaderboard Page - Premium Design
+ */
+
+.pageWrapper {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  background: linear-gradient(
+    135deg,
+    hsl(var(--muted) / 0.3) 0%,
+    hsl(var(--background)) 50%,
+    hsl(var(--muted) / 0.2) 100%
+  );
+  position: relative;
+}
+
+.pageWrapper::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(
+      circle at 20% 30%,
+      hsl(var(--primary) / 0.05) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 70%,
+      hsl(var(--accent) / 0.05) 0%,
+      transparent 50%
+    );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.mainContent {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  position: relative;
+  z-index: 1;
+}
+
+.header {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  background: hsl(var(--background) / 0.8);
+  border-bottom: 1px solid hsl(var(--border) / 0.5);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  flex-shrink: 0;
+}
+
+.headerContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  gap: 2rem;
+}
+
+.headerTitle {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.headerIconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--gradient-primary);
+  box-shadow: 0 4px 12px hsl(var(--primary) / 0.2);
+}
+
+.headerIcon {
+  width: 22px;
+  height: 22px;
+  color: white;
+}
+
+.headerText {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: hsl(var(--foreground));
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: white;
+  background: var(--gradient-primary);
+  border-radius: 9999px;
+  text-decoration: none;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 8px hsl(var(--primary) / 0.2);
+  height: 36px;
+}
+
+.backLink:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px hsl(var(--primary) / 0.3);
+}
+
+.content {
+  flex: 1;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  overflow-y: auto;
+  max-width: 800px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.periodSelector {
+  display: flex;
+  gap: 0.5rem;
+  background: hsl(var(--muted) / 0.6);
+  backdrop-filter: blur(10px);
+  border: 1px solid hsl(var(--border) / 0.5);
+  border-radius: 12px;
+  padding: 4px;
+  width: fit-content;
+}
+
+.periodButton {
+  padding: 0.5rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: hsl(var(--muted-foreground));
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.periodButton:hover:not(:disabled) {
+  color: hsl(var(--foreground));
+}
+
+.periodButton.active {
+  color: hsl(var(--primary-foreground));
+  background: var(--gradient-primary);
+  box-shadow: 0 2px 8px hsl(var(--primary) / 0.3);
+}
+
+.periodButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.timeRemaining {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: hsl(var(--muted) / 0.5);
+  border: 1px solid hsl(var(--border) / 0.5);
+  border-radius: 10px;
+  font-size: 0.875rem;
+  color: hsl(var(--muted-foreground));
+  width: fit-content;
+}
+
+.clockIcon {
+  width: 16px;
+  height: 16px;
+  color: hsl(var(--primary));
+}
+
+.leaderboardCard {
+  background: hsl(var(--background) / 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid hsl(var(--border) / 0.3);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px hsl(var(--foreground) / 0.06),
+    inset 0 1px 0 hsl(var(--background) / 0.8);
+  padding: 1.5rem;
+  overflow: hidden;
+}
+
+.error {
+  padding: 2rem;
+  text-align: center;
+  color: hsl(var(--destructive));
+  font-size: 0.9375rem;
+}
+
+@media (max-width: 768px) {
+  .headerContent {
+    padding: 1rem 1.25rem;
+  }
+
+  .headerText {
+    font-size: 1.25rem;
+  }
+
+  .content {
+    padding: 1.5rem;
+    gap: 1.25rem;
+  }
+
+  .leaderboardCard {
+    padding: 1rem;
+    border-radius: 16px;
+  }
+}
+

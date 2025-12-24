@@ -34,6 +34,9 @@ import { GraduationCap } from "lucide-react";
 import { streamGenerate, stopGeneration } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import AccountDropdown from "@/components/common/AccountDropdown";
+import XpIndicator from "@/components/xp/XpIndicator";
+import XpToastManager from "@/components/xp/XpToastManager";
+import { useXp } from "@/features/xp/xpStore";
 import styles from "./Index.module.css";
 
 interface Message {
@@ -77,6 +80,8 @@ const Index = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { isAuthenticated, isChecking, logout } = useAuth();
+  const { awardXp } = useXp();
+  const sessionStartTimeRef = useRef<number | null>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -94,6 +99,20 @@ const Index = () => {
       setMode('theory');
     }
   }, [location.pathname]);
+
+  // Track session start for XP
+  useEffect(() => {
+    sessionStartTimeRef.current = Date.now();
+    return () => {
+      // Award session_finished XP when component unmounts (session ends)
+      if (sessionStartTimeRef.current) {
+        const duration = (Date.now() - sessionStartTimeRef.current) / 1000 / 60; // minutes
+        if (duration >= 5) {
+          awardXp("session_finished", { sessionDuration: duration });
+        }
+      }
+    };
+  }, [awardXp]);
 
   const handleSendMessage = async (content: string) => {
     // Cancel any ongoing request
@@ -141,6 +160,10 @@ const Index = () => {
         () => {
           setIsTyping(false);
           abortControllerRef.current = null;
+          // Award XP for task solved (when AI responds)
+          if (mode === 'practice') {
+            awardXp("task_solved", { taskId: aiMessageId, mode });
+          }
         },
         (error) => {
           console.error("Stream error:", error);
@@ -245,9 +268,10 @@ const Index = () => {
                 <div className={styles.headerIconWrapper}>
                   <GraduationCap className={styles.headerIcon} />
                 </div>
-                <h1 className={styles.headerText}>AI Репетитор</h1>
+                <h1 className={styles.headerText}>T-ASK</h1>
               </div>
               <div className={styles.headerActions}>
+                <XpIndicator />
                 <nav className={styles.modeNav} aria-label="Режим">
                   <div
                     className={`${styles.modeGroup} ${mode === 'theory' ? styles.isTheory : styles.isPractice}`}
@@ -300,6 +324,7 @@ const Index = () => {
             </div>
           </main>
         </div>
+        <XpToastManager />
       </div>
     </SidebarProvider>
   );
