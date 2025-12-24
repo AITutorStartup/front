@@ -26,12 +26,14 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   padding: 3rem 4rem;
+  padding-top: 4rem;
   background: hsl(var(--background));
   position: relative;
   z-index: 2;
   transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  overflow-y: auto;
 }
 
 .formPanel.leftPanel {
@@ -53,6 +55,8 @@
 /* Welcome Panel - Colored background */
 .welcomePanel {
   flex: 0 0 40%;
+  min-width: 45%;
+  max-width: 45%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -133,6 +137,34 @@
   color: hsl(var(--primary));
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.secondaryButton {
+  padding: 14px 40px;
+  background: transparent;
+  border: 2px solid hsl(var(--primary));
+  border-radius: 50px;
+  color: hsl(var(--primary));
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.secondaryButton:hover:not(:disabled) {
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px hsl(var(--primary) / 0.3);
+}
+
+.secondaryButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .title {
@@ -253,6 +285,7 @@
 
   .formPanel {
     padding: 2.5rem 2rem;
+    padding-top: 3rem;
     order: 1 !important;
   }
 
@@ -292,6 +325,7 @@
 @media (max-width: 480px) {
   .formPanel {
     padding: 2rem 1.5rem;
+    padding-top: 2.5rem;
   }
 
   .welcomePanel {

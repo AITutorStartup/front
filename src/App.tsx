@@ -11,6 +11,7 @@ import Welcome from "./pages/landing/Welcome";
 import Profile from "./pages/chat/Profile";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import ResetPassword from "./pages/auth/ResetPassword";
+import StudyDashboard from "./pages/study/StudyDashboard";
 import { SidebarProvider } from "./context/SidebarContext";
 import ProtectedRoute from "./components/layout/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
@@ -62,6 +63,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <Profile />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/about-study"
+              element={
+                <ProtectedRoute>
+                  <StudyDashboard />
                 </ProtectedRoute>
               }
             />

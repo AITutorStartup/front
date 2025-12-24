@@ -177,6 +177,9 @@
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow: 0 2px 8px hsl(var(--primary) / 0.2);
+  height: 36px;
+  width: 85px;
+  white-space: nowrap;
 }
 
 .authLink:hover:not(:disabled) {

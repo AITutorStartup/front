@@ -33,6 +33,7 @@ import SidebarTrigger from '@/components/layout/SidebarTrigger';
 import { GraduationCap } from "lucide-react";
 import { streamGenerate, stopGeneration } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
+import AccountDropdown from "@/components/common/AccountDropdown";
 import styles from "./Index.module.css";
 
 interface Message {
@@ -220,9 +221,7 @@ const Index = () => {
 
     return (
       <>
-        <Link to="/profile" className={styles.authLink}>
-          Профиль
-        </Link>
+        <AccountDropdown />
         <button type="button" onClick={handleLogout} className={styles.authLink}>
           Выйти
         </button>

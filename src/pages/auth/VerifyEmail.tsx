@@ -86,54 +86,80 @@ const VerifyEmail = () => {
 
   return (
     <div className={styles.authContainer}>
-      <div className={styles.formWrapper}>
-        <h1 className={styles.title}>Подтвердите почту</h1>
+      <div className={styles.splitContainer}>
+        {/* Form Panel - Left */}
+        <div className={`${styles.formPanel} ${styles.leftPanel}`}>
+          <h1 className={styles.title}>Подтвердите почту</h1>
 
-        <p className={styles.subtitle}>
-          Мы отправим шестизначный код на email, указанный при регистрации. После подтверждения
-          откроется доступ к обучающим материалам.
-        </p>
-
-        {loadingStatus && (
-          <div className={`${styles.status} ${styles.info}`}>Проверяем статус подтверждения...</div>
-        )}
-        {statusMessage && (
-          <div className={`${styles.status} ${styles.success}`}>{statusMessage}</div>
-        )}
-        {error && <div className={`${styles.status} ${styles.error}`}>{error}</div>}
-
-        {!isVerified && (
-          <div className={styles.actionRow}>
-            <Button type="button" onClick={handleSendCode} disabled={cooldown > 0}>
-              {cooldown > 0 ? `Отправить повторно через ${cooldown}с` : "Отправить код"}
-            </Button>
-          </div>
-        )}
-
-        {!isVerified && (
           <form onSubmit={handleSubmit} className={styles.form}>
-            <input
-              type="text"
-              inputMode="numeric"
-              pattern="[0-9]{6}"
-              maxLength={6}
-              placeholder="Введите код из письма"
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-              className={styles.input}
-              required
-            />
-            <Button type="submit" disabled={code.trim().length !== 6}>
-              Подтвердить email
-            </Button>
+            {loadingStatus && (
+              <div className={`${styles.status} ${styles.info}`}>Проверяем статус подтверждения...</div>
+            )}
+            {statusMessage && (
+              <div className={`${styles.status} ${styles.success}`}>{statusMessage}</div>
+            )}
+            {error && <div className={`${styles.status} ${styles.error}`}>{error}</div>}
+            
+            {!isVerified && (
+              <>
+                <div className={styles.inputGroup}>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]{6}"
+                    maxLength={6}
+                    placeholder="Введите код из письма"
+                    value={code}
+                    onChange={(e) => setCode(e.target.value)}
+                    className={styles.input}
+                    required
+                  />
+                </div>
+                <Button type="submit" disabled={code.trim().length !== 6} className={styles.submitButton}>
+                  Подтвердить email
+                </Button>
+              </>
+            )}
           </form>
-        )}
 
-        <ul className={styles.helperList}>
-          <li>Письмо может попасть в папку «Спам» или «Промоакции».</li>
-          <li>Новый код можно запрашивать не чаще одного раза в минуту.</li>
-          <li>Если не получается подтвердить почту — напишите нам, поможем.</li>
-        </ul>
+          {!isVerified && (
+            <button 
+              type="button" 
+              onClick={handleSendCode} 
+              disabled={cooldown > 0}
+              className={styles.secondaryButton}
+            >
+              {cooldown > 0 ? `Отправить повторно через ${cooldown}с` : "Отправить код"}
+            </button>
+          )}
+        </div>
+
+        {/* Welcome Panel - Right with gradient */}
+        <div className={`${styles.welcomePanel} ${styles.rightPanel}`}>
+          <div className={styles.welcomeContent}>
+            <h2 className={styles.welcomeTitle}>
+              Подтвердите email
+            </h2>
+            <p className={styles.welcomeText}>
+              Мы отправим шестизначный код на email, указанный при регистрации. После подтверждения откроется доступ к обучающим материалам.
+            </p>
+            {!isVerified && (
+              <ul style={{ 
+                marginTop: "2rem", 
+                paddingLeft: "1.5rem", 
+                fontSize: "0.9rem", 
+                color: "rgba(255, 255, 255, 0.95)",
+                lineHeight: "1.8",
+                textAlign: "left",
+                maxWidth: "280px"
+              }}>
+                <li style={{ marginBottom: "0.75rem" }}>Письмо может попасть в папку «Спам» или «Промоакции».</li>
+                <li style={{ marginBottom: "0.75rem" }}>Новый код можно запрашивать не чаще одного раза в минуту.</li>
+                <li>Если не получается подтвердить почту — напишите нам, поможем.</li>
+              </ul>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
