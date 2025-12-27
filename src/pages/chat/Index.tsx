@@ -114,6 +114,39 @@ const Index = () => {
     };
   }, [awardXp]);
 
+  // Cancel stream when tab becomes hidden or component unmounts
+  useEffect(() => {
+    const handleVisibilityChange = async () => {
+      if (document.hidden && abortControllerRef.current) {
+        // Tab became hidden, cancel the stream
+        abortControllerRef.current.abort();
+        abortControllerRef.current = null;
+        setIsTyping(false);
+        try {
+          await stopGeneration();
+        } catch (e) {
+          console.error("Failed to stop generation on visibility change:", e);
+        }
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      // Cancel stream on component unmount
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+        abortControllerRef.current = null;
+        setIsTyping(false);
+        // Try to stop generation on backend, but don't await to avoid blocking unmount
+        stopGeneration().catch((e) => {
+          console.error("Failed to stop generation on unmount:", e);
+        });
+      }
+    };
+  }, []);
+
   const handleSendMessage = async (content: string) => {
     // Cancel any ongoing request
     if (abortControllerRef.current) {

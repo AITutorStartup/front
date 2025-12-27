@@ -7,7 +7,7 @@ import TypingIndicator from "@/components/chat/TypingIndicator";
 import { SidebarProvider } from '@/context/SidebarContext';
 import SidebarTrigger from '@/components/layout/SidebarTrigger';
 import { GraduationCap } from "lucide-react";
-import { streamGenerate } from "@/lib/api";
+import { streamGenerate, stopGeneration } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import AccountDropdown from "@/components/common/AccountDropdown";
 import XpIndicator from "@/components/xp/XpIndicator";
@@ -56,6 +56,39 @@ const Practice = () => {
       }
     };
   }, [awardXp]);
+
+  // Cancel stream when tab becomes hidden or component unmounts
+  useEffect(() => {
+    const handleVisibilityChange = async () => {
+      if (document.hidden && abortControllerRef.current) {
+        // Tab became hidden, cancel the stream
+        abortControllerRef.current.abort();
+        abortControllerRef.current = null;
+        setIsTyping(false);
+        try {
+          await stopGeneration();
+        } catch (e) {
+          console.error("Failed to stop generation on visibility change:", e);
+        }
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      // Cancel stream on component unmount
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+        abortControllerRef.current = null;
+        setIsTyping(false);
+        // Try to stop generation on backend, but don't await to avoid blocking unmount
+        stopGeneration().catch((e) => {
+          console.error("Failed to stop generation on unmount:", e);
+        });
+      }
+    };
+  }, []);
 
   const handleSendMessage = async (content: string) => {
     if (abortControllerRef.current) {
@@ -118,11 +151,16 @@ const Practice = () => {
     }
   };
 
-  const handleCancel = () => {
+  const handleCancel = async () => {
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
       abortControllerRef.current = null;
       setIsTyping(false);
+      try {
+        await stopGeneration();
+      } catch (e) {
+        console.error("Failed to stop generation:", e);
+      }
     }
   };
 
