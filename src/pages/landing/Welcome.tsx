@@ -303,7 +303,7 @@ const Welcome = () => {
       <footer className="footer">
         <div className="footer-content">
           <div className="footer-brand">
-            <div className="company-name">EduAI Platform</div>
+            <div className="company-name">T-Ask</div>
             <p className="company-tagline">
               Образовательная платформа нового поколения с искусственным интеллектом, 
               которая делает обучение математике эффективным и увлекательным.
@@ -317,18 +317,10 @@ const Welcome = () => {
             <a href="#" className="footer-link">🔒 Безопасность</a>
             <a href="#" className="footer-link">📄 Условия использования</a>
           </div>
-          
-        <div className="contact-info">
-            <h4 className="footer-heading">Контакты</h4>
-            <div className="contact-item">
-              <span className="contact-icon">📧</span>
-              <span>hello@eduai-platform.ru</span>
-            </div>
-          </div>
         </div>
         
         <div className="footer-bottom">
-          <p>© 2025 EduAI Platform. Все права защищены.</p>
+          <p>© 2025 T-Ask. Все права защищены.</p>
         </div>
       </footer>
     </div>
