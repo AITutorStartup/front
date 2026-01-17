@@ -125,7 +125,10 @@ const Practice = () => {
           awardXp("task_solved", { taskId: aiMessageId, mode: 'practice' });
         },
         (error) => {
-          console.error("Stream error:", error);
+          // Логируем только реальные ошибки, не AbortError (это ожидаемое поведение)
+          if (error.name !== "AbortError") {
+            console.error("Stream error:", error);
+          }
           setIsTyping(false);
           setMessages((prev) =>
             prev.map((msg) =>
@@ -134,7 +137,7 @@ const Practice = () => {
                     ...msg,
                     content:
                       error.name === "AbortError"
-                        ? "Запрос прерван пользователем."
+                        ? "Запрос прерван."
                         : `Ошибка: ${error.message}`,
                   }
                 : msg
@@ -144,8 +147,11 @@ const Practice = () => {
         },
         abortControllerRef.current.signal
       );
-    } catch (error) {
-      console.error("Error in streamGenerate:", error);
+    } catch (error: any) {
+      // Логируем только реальные ошибки, не AbortError
+      if (error?.name !== "AbortError") {
+        console.error("Error in streamGenerate:", error);
+      }
       setIsTyping(false);
       abortControllerRef.current = null;
     }

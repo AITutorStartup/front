@@ -253,14 +253,21 @@ export async function streamGenerate(
     }
   } catch (error: any) {
     clearTimeout(timeoutId);
-    if (error.name === "AbortError") {
+    
+    // Проверяем, был ли запрос прерван через AbortSignal
+    if (error.name === "AbortError" || error.message?.includes("aborted")) {
+      // Это ожидаемое прерывание (пользователь отменил, вкладка скрыта, компонент размонтирован)
+      // Не логируем как ошибку, просто вызываем onError с информативным сообщением
       const abortError = new Error("Запрос прерван");
       abortError.name = "AbortError";
       onError?.(abortError);
+      // Не пробрасываем ошибку дальше, так как это ожидаемое поведение
+      return;
     } else {
+      // Это реальная ошибка - логируем и пробрасываем
       onError?.(error instanceof Error ? error : new Error(String(error)));
+      throw error;
     }
-    throw error;
   }
 }
 
