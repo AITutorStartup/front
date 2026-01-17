@@ -12,7 +12,7 @@ const normalizeBaseUrl = (value?: string) => {
 const RAW_AUTH_BASE_URL =
   import.meta.env.VITE_AUTH_API_URL ||
   import.meta.env.VITE_API_URL ||
-  "/api";
+  "https://task-livid-three.vercel.app";
 
 const AUTH_BASE_URL = normalizeBaseUrl(RAW_AUTH_BASE_URL);
 

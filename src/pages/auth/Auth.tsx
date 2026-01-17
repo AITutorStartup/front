@@ -44,32 +44,14 @@ const Auth = () => {
     try {
       await api.post("/auth/login", { email, password });
       await refresh();
-
-      let nextRoute = redirectFrom;
-      try {
-        const verifyStatus = await api.get<{ is_active: boolean }>("/users/verify_email_status");
-        if (!verifyStatus.is_active) {
-          nextRoute = "/verify-email";
-          setInfo("Вход выполнен. Подтвердите почту, чтобы продолжить.");
-        } else {
-          setInfo("Вход выполнен. Перенаправляем...");
-        }
-      } catch {
-        nextRoute = "/verify-email";
-        setInfo("Не удалось проверить почту, откроем страницу подтверждения.");
-      }
-
+      setInfo("Вход выполнен. Перенаправляем...");
+      
       // Навигация происходит независимо от ошибок API
       setTimeout(() => {
-        navigate(nextRoute, { replace: true });
+        navigate(redirectFrom, { replace: true });
       }, 500);
     } catch (err: any) {
       setError(err.message || "Не удалось войти");
-      // Даже при ошибке разрешаем навигацию
-      setTimeout(() => {
-        navigate(redirectFrom, { replace: true });
-      }, 1000);
-    } finally {
       setLoading(false);
     }
   };
