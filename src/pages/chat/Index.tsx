@@ -187,9 +187,7 @@ const Index = () => {
             )
           );
         },
-        (meta) => {
-          console.log("Meta:", meta);
-        },
+        undefined,
         () => {
           setIsTyping(false);
           abortControllerRef.current = null;

@@ -144,5 +144,3 @@ export function resetMockXpData() {
     updatedAt: new Date().toISOString(),
   };
 }
-
-

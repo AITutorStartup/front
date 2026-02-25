@@ -83,22 +83,17 @@ const Auth = () => {
         setEmail("");
       }, 1500);
     } catch (err: any) {
-      console.error("Registration error:", err);
-      let errorMessage = "Не удалось зарегистрироваться";
-      
-      if (err instanceof Error) {
-        errorMessage = err.message;
-      } else if (err?.message) {
-        errorMessage = err.message;
-      } else if (typeof err === "string") {
-        errorMessage = err;
-      }
-      
-      // Если это ошибка сети, показываем более понятное сообщение
+      let errorMessage =
+        err?.message && typeof err.message === "string"
+          ? err.message
+          : typeof err === "string"
+          ? err
+          : "Не удалось зарегистрироваться";
+
       if (errorMessage.includes("fetch") || errorMessage.includes("подключиться")) {
         errorMessage = "Ошибка подключения к серверу. Проверьте интернет-соединение и попробуйте снова.";
       }
-      
+
       setError(errorMessage);
       setLoading(false);
     }

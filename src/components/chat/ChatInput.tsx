@@ -43,12 +43,6 @@ const ChatInput = ({ onSend, disabled, onCancel, showCancel }: ChatInputProps) =
     }
   };
 
-  const handleCancel = () => {
-    if (onCancel) {
-      onCancel();
-    }
-  };
-
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -76,7 +70,7 @@ const ChatInput = ({ onSend, disabled, onCancel, showCancel }: ChatInputProps) =
           <div className={styles.actions}>
             {showCancel && onCancel ? (
               <button
-                onClick={handleCancel}
+                onClick={onCancel}
                 className={styles.cancelButton}
                 title="Остановить генерацию"
                 aria-label="Остановить генерацию"

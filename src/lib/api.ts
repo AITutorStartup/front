@@ -1,27 +1,4 @@
-const normalizeBaseUrl = (value?: string) => {
-  if (!value || value.trim() === "") {
-    return "";
-  }
-  const trimmed = value.trim();
-  if (trimmed === "/") {
-    return "";
-  }
-  return trimmed.endsWith("/") ? trimmed.slice(0, -1) : trimmed;
-};
-
-// ПРИНУДИТЕЛЬНО используем Vercel URL - игнорируем ВСЕ переменные окружения
-// Это гарантирует, что запросы ВСЕГДА идут на продакшен бэкенд
 const AUTH_BASE_URL = "https://task-livid-three.vercel.app";
-
-// Проверка и логирование для отладки
-if (import.meta.env.DEV) {
-  const envUrl = import.meta.env.VITE_AUTH_API_URL || import.meta.env.VITE_API_URL;
-  if (envUrl) {
-    console.warn("[API Config] ⚠️ Обнаружена переменная окружения, но она ИГНОРИРУЕТСЯ:", envUrl);
-  }
-  console.log("[API Config] ✅ Используется AUTH_BASE_URL:", AUTH_BASE_URL);
-  console.log("[API Config] 🔒 URL жестко задан в коде и не может быть изменен");
-}
 
 type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
@@ -83,22 +60,7 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
     ...options.headers,
   };
 
-  // ПРИНУДИТЕЛЬНАЯ проверка - если по какой-то причине URL содержит localhost, заменяем
-  let baseUrl = AUTH_BASE_URL;
-  if (baseUrl.includes("localhost") || baseUrl.includes("127.0.0.1") || baseUrl.includes(":8000")) {
-    console.error("[API] ❌ ОШИБКА: Обнаружен localhost в AUTH_BASE_URL! Принудительно заменяем на Vercel URL.");
-    baseUrl = "https://task-livid-three.vercel.app";
-  }
-  
-  const fullUrl = `${baseUrl}${normalizePath(path)}`;
-  
-  // Логирование для отладки (только в dev режиме)
-  if (import.meta.env.DEV) {
-    console.log(`[API] ${options.method || "GET"} ${fullUrl}`, options.body);
-    if (fullUrl.includes("localhost") || fullUrl.includes("127.0.0.1") || fullUrl.includes(":8000")) {
-      console.error("[API] ❌ КРИТИЧЕСКАЯ ОШИБКА: fullUrl содержит localhost! Это не должно происходить!");
-    }
-  }
+  const fullUrl = `${AUTH_BASE_URL}${normalizePath(path)}`;
 
   try {
     const response = await fetch(fullUrl, {
@@ -310,7 +272,7 @@ function processEvent(
       onMeta?.({ type: "cancelled" });
       break;
     default:
-      console.warn("Unknown event type:", data.type);
+      break;
   }
 }
 
