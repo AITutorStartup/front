@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import { SidebarProvider } from "@/context/SidebarContext";
 import SidebarTrigger from "@/components/layout/SidebarTrigger";
 import ChatSidebar from "@/features/chat/components/ChatSidebar";
-import { Target, Clock, TrendingUp, BookOpen } from "lucide-react";
+import { Target, Clock, TrendingUp } from "lucide-react";
+import logoBlack from "@/assets/Logo_black.png";
 import { useStudyDashboard } from "@/features/study/hooks/useStudyDashboard";
 import KpiCard from "@/features/study/components/KpiCard";
 import WeeklyActivityChart from "@/features/study/components/WeeklyActivityChart";
@@ -62,13 +63,8 @@ export default function StudyDashboard() {
             <div className={styles.headerContent}>
               <div className={styles.headerTitle}>
                 <SidebarTrigger />
-                <div className={styles.headerIconWrapper}>
-                  <BookOpen className={styles.headerIcon} />
-                </div>
-                <div>
-                  <h1 className={styles.headerText}>Учёба</h1>
-                  <p className={styles.headerSubtitle}>{todayStatus}</p>
-                </div>
+                <img src={logoBlack} alt="T-ASK" className={styles.headerLogo} />
+                <p className={styles.headerSubtitle}>{todayStatus}</p>
               </div>
               <div className={styles.headerActions}>
                 <div className={styles.timeRangeSelector}>

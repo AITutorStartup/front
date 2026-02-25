@@ -30,7 +30,7 @@ import ChatInput from "@/features/chat/components/ChatInput";
 import TypingIndicator from "@/features/chat/components/TypingIndicator";
 import { SidebarProvider } from '@/context/SidebarContext';
 import SidebarTrigger from '@/components/layout/SidebarTrigger';
-import logoBlue from "@/assets/Logo_blue.png";
+import logoBlack from "@/assets/Logo_black.png";
 import { streamGenerate, stopGeneration } from "@/lib/api";
 import { useAuth } from "@/features/auth/AuthContext";
 import AccountDropdown from "@/components/common/AccountDropdown";
@@ -296,8 +296,7 @@ const Index = () => {
             <div className={styles.headerContent}>
               <div className={styles.headerTitle}>
                 <SidebarTrigger />
-                <img src={logoBlue} alt="T-ASK" className={styles.headerLogo} />
-                <h1 className={styles.headerText}>T-ASK</h1>
+                <img src={logoBlack} alt="T-ASK" className={styles.headerLogo} />
               </div>
               <div className={styles.headerActions}>
                 <XpIndicator />

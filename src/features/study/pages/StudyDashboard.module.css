@@ -68,21 +68,9 @@
   gap: 1rem;
 }
 
-.headerIconWrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  background: var(--gradient-primary);
-  box-shadow: 0 4px 12px hsl(var(--primary) / 0.2);
-}
-
-.headerIcon {
-  width: 22px;
-  height: 22px;
-  color: white;
+.headerLogo {
+  height: 36px;
+  width: auto;
 }
 
 .headerText {
@@ -310,14 +298,8 @@
     gap: 0.75rem;
   }
 
-  .headerIconWrapper {
-    width: 36px;
-    height: 36px;
-  }
-
-  .headerIcon {
-    width: 20px;
-    height: 20px;
+  .headerLogo {
+    height: 28px;
   }
 
   .headerText {

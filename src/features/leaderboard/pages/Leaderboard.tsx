@@ -4,7 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import { SidebarProvider } from "@/context/SidebarContext";
 import SidebarTrigger from "@/components/layout/SidebarTrigger";
 import ChatSidebar from "@/features/chat/components/ChatSidebar";
-import { Trophy, Clock } from "lucide-react";
+import { Clock } from "lucide-react";
+import logoBlack from "@/assets/Logo_black.png";
 import { getLeaderboard, getTimeRemainingInWeek } from "@/features/leaderboard/leaderboardApi";
 import LeaderboardList from "@/features/leaderboard/components/LeaderboardList";
 import styles from "./Leaderboard.module.css";
@@ -35,10 +36,7 @@ export default function Leaderboard() {
             <div className={styles.headerContent}>
               <div className={styles.headerTitle}>
                 <SidebarTrigger />
-                <div className={styles.headerIconWrapper}>
-                  <Trophy className={styles.headerIcon} />
-                </div>
-                <h1 className={styles.headerText}>Таблица лидеров</h1>
+                <img src={logoBlack} alt="T-ASK" className={styles.headerLogo} />
               </div>
               <div className={styles.headerActions}>
                 <Link to="/app" className={styles.backLink}>
