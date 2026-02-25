@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate, useSearchParams } from "react-router-do
 import Button from "@/components/ui/button";
 import styles from "./Auth.module.css";
 import { api } from "@/lib/api";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "../AuthContext";
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);

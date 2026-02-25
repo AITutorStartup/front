@@ -1,5 +1,5 @@
 import styles from "./TopicProgressList.module.css";
-import { TopicProgress } from "@/lib/mockStudyDashboard";
+import { TopicProgress } from "@/features/study/lib/mockStudyDashboard";
 
 interface TopicProgressListProps {
   topics: TopicProgress[];

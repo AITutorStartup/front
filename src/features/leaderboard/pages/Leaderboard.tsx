@@ -3,10 +3,10 @@ import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { SidebarProvider } from "@/context/SidebarContext";
 import SidebarTrigger from "@/components/layout/SidebarTrigger";
-import ChatSidebar from "@/components/chat/ChatSidebar";
-import { GraduationCap, Trophy, Clock } from "lucide-react";
+import ChatSidebar from "@/features/chat/components/ChatSidebar";
+import { Trophy, Clock } from "lucide-react";
 import { getLeaderboard, getTimeRemainingInWeek } from "@/features/leaderboard/leaderboardApi";
-import LeaderboardList from "@/components/leaderboard/LeaderboardList";
+import LeaderboardList from "@/features/leaderboard/components/LeaderboardList";
 import styles from "./Leaderboard.module.css";
 
 export default function Leaderboard() {

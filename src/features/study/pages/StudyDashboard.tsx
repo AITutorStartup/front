@@ -2,13 +2,13 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { SidebarProvider } from "@/context/SidebarContext";
 import SidebarTrigger from "@/components/layout/SidebarTrigger";
-import ChatSidebar from "@/components/chat/ChatSidebar";
-import { GraduationCap, Target, Clock, TrendingUp, BookOpen } from "lucide-react";
-import { useStudyDashboard } from "@/hooks/useStudyDashboard";
-import KpiCard from "@/components/study/KpiCard";
-import WeeklyActivityChart from "@/components/study/WeeklyActivityChart";
-import TopicProgressList from "@/components/study/TopicProgressList";
-import RecentActivityList from "@/components/study/RecentActivityList";
+import ChatSidebar from "@/features/chat/components/ChatSidebar";
+import { Target, Clock, TrendingUp, BookOpen } from "lucide-react";
+import { useStudyDashboard } from "@/features/study/hooks/useStudyDashboard";
+import KpiCard from "@/features/study/components/KpiCard";
+import WeeklyActivityChart from "@/features/study/components/WeeklyActivityChart";
+import TopicProgressList from "@/features/study/components/TopicProgressList";
+import RecentActivityList from "@/features/study/components/RecentActivityList";
 import styles from "./StudyDashboard.module.css";
 
 export default function StudyDashboard() {

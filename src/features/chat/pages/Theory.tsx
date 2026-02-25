@@ -1,17 +1,17 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import ChatSidebar from "@/components/chat/ChatSidebar";
-import ChatMessage from "@/components/chat/ChatMessage";
-import ChatInput from "@/components/chat/ChatInput";
-import TypingIndicator from "@/components/chat/TypingIndicator";
+import ChatSidebar from "@/features/chat/components/ChatSidebar";
+import ChatMessage from "@/features/chat/components/ChatMessage";
+import ChatInput from "@/features/chat/components/ChatInput";
+import TypingIndicator from "@/features/chat/components/TypingIndicator";
 import { SidebarProvider } from '@/context/SidebarContext';
 import SidebarTrigger from '@/components/layout/SidebarTrigger';
-import { GraduationCap } from "lucide-react";
+import logoBlue from "@/assets/Logo_blue.png";
 import { streamGenerate, stopGeneration } from "@/lib/api";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/features/auth/AuthContext";
 import AccountDropdown from "@/components/common/AccountDropdown";
-import XpIndicator from "@/components/xp/XpIndicator";
-import XpToastManager from "@/components/xp/XpToastManager";
+import XpIndicator from "@/features/xp/components/XpIndicator";
+import XpToastManager from "@/features/xp/components/XpToastManager";
 import { useXp } from "@/features/xp/xpStore";
 import styles from "./Index.module.css";
 
@@ -212,9 +212,7 @@ const Theory = () => {
             <div className={styles.headerContent}>
               <div className={styles.headerTitle}>
                 <SidebarTrigger />
-                <div className={styles.headerIconWrapper}>
-                  <GraduationCap className={styles.headerIcon} />
-                </div>
+                <img src={logoBlue} alt="T-ASK" className={styles.headerLogo} />
                 <h1 className={styles.headerText}>T-ASK</h1>
               </div>
               <div className={styles.headerActions}>

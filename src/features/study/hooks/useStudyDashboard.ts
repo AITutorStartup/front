@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
-import { mockStudyDashboard, StudyDashboardData } from "@/lib/mockStudyDashboard";
+import { mockStudyDashboard, StudyDashboardData } from "@/features/study/lib/mockStudyDashboard";
 
 /**
  * Hook to fetch study dashboard data

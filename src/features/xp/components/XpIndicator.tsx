@@ -1,5 +1,5 @@
-import { useXp } from "@/features/xp/xpStore";
-import { calculateLevelProgress } from "@/features/xp/xpRules";
+import { useXp } from "../xpStore";
+import { calculateLevelProgress } from "../xpRules";
 import { Trophy, Zap } from "lucide-react";
 import styles from "./XpIndicator.module.css";
 

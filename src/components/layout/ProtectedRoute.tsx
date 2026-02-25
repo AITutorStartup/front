@@ -1,7 +1,7 @@
 import { ReactElement } from "react";
 import { Navigate, useLocation } from "react-router-dom";
-import { useAuth } from "@/context/AuthContext";
-import authStyles from "@/pages/auth/Auth.module.css";
+import { useAuth } from "@/features/auth/AuthContext";
+import authStyles from "@/features/auth/pages/Auth.module.css";
 
 interface ProtectedRouteProps {
   children: ReactElement;

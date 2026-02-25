@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git -C \"E:/study/HSE/2 курс/minor/code/study-chat-ai-main\" status --short)",
+      "Bash(git mv:*)",
+      "Bash(dir:*)",
+      "Bash(echo:*)",
+      "Bash(npm run build:*)"
+    ]
+  }
+}

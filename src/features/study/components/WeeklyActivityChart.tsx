@@ -1,5 +1,5 @@
 import styles from "./WeeklyActivityChart.module.css";
-import { WeeklyActivity } from "@/lib/mockStudyDashboard";
+import { WeeklyActivity } from "@/features/study/lib/mockStudyDashboard";
 
 interface WeeklyActivityChartProps {
   data: WeeklyActivity[];

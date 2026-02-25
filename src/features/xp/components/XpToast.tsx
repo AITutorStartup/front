@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useXp } from "@/features/xp/xpStore";
+import { useXp } from "../xpStore";
 import styles from "./XpToast.module.css";
 
 interface XpToastProps {

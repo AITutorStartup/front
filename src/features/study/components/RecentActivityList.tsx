@@ -1,5 +1,5 @@
 import styles from "./RecentActivityList.module.css";
-import { RecentActivity } from "@/lib/mockStudyDashboard";
+import { RecentActivity } from "@/features/study/lib/mockStudyDashboard";
 import { CheckCircle2, XCircle } from "lucide-react";
 
 interface RecentActivityListProps {
