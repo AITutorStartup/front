@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
 import './Welcome.css';
+import logoBlack from '../../assets/Logo_black.png';
 
 const GOOGLE_FORM_LINK =
   'https://docs.google.com/forms/d/e/1FAIpQLSd9UM1KqOoBBwnzIiu7nmPR0Yz3nyyQGxi4NzCoMynN8Dc_sw/viewform';
@@ -310,7 +311,7 @@ function Navbar({ onScroll, onNavigate }: { onScroll: () => void; onNavigate: ()
       transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
     >
       <div className="navbar__inner">
-        <span className="navbar__logo">T-Ask</span>
+        <img src={logoBlack} alt="T-Ask" className="navbar__logo-img" />
         <div className="navbar__right">
           <motion.button
             className="navbar__cta"
@@ -584,7 +585,7 @@ const Welcome = () => {
       <footer className="footer">
         <div className="footer__inner">
           <div className="footer__brand">
-            <div className="footer__logo">T-Ask</div>
+            <img src={logoBlack} alt="T-Ask" className="footer__logo-img" />
             <p className="footer__tagline">
               Образовательная платформа нового поколения с искусственным интеллектом,
               которая делает обучение математике эффективным и увлекательным.

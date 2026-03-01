@@ -48,6 +48,12 @@
   color: hsl(var(--foreground));
 }
 
+.navbar__logo-img {
+  height: 2rem;
+  width: auto;
+  display: block;
+}
+
 .navbar__right {
   display: flex;
   align-items: center;
@@ -740,6 +746,13 @@
   font-weight: 900;
   letter-spacing: -0.04em;
   color: hsl(var(--foreground));
+  margin-bottom: 1rem;
+}
+
+.footer__logo-img {
+  height: 2.5rem;
+  width: auto;
+  display: block;
   margin-bottom: 1rem;
 }
 
