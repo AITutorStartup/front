@@ -7,32 +7,14 @@ import styles from "./Auth.module.css";
 const RESEND_COOLDOWN = 60;
 
 const VerifyEmail = () => {
+  const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
   const [cooldown, setCooldown] = useState(0);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isVerified, setIsVerified] = useState(false);
-  const [loadingStatus, setLoadingStatus] = useState(true);
   const navigate = useNavigate();
 
-  const loadStatus = async () => {
-    setLoadingStatus(true);
-    try {
-      const result = await api.get<{ is_active: boolean }>("/users/verify_email_status");
-      setIsVerified(result.is_active);
-      if (result.is_active) {
-        setStatusMessage("Email уже подтверждён");
-      }
-    } catch {
-      setIsVerified(false);
-    } finally {
-      setLoadingStatus(false);
-    }
-  };
-
-  useEffect(() => {
-    void loadStatus();
-  }, []);
 
   useEffect(() => {
     if (cooldown > 0) {
@@ -55,10 +37,14 @@ const VerifyEmail = () => {
   }, [isVerified, navigate]);
 
   const handleSendCode = async () => {
+    if (!email.trim()) {
+      setError("Введите email для отправки кода.");
+      return;
+    }
     setError(null);
     setStatusMessage(null);
     try {
-      await api.post("/auth/send-verification-code");
+      await api.post("/auth/send-verification/email", { email: email.trim() });
       setStatusMessage("Мы отправили код на вашу почту. Проверьте входящие и спам.");
       setCooldown(RESEND_COOLDOWN);
     } catch (err: any) {
@@ -92,9 +78,6 @@ const VerifyEmail = () => {
           <h1 className={styles.title}>Подтвердите почту</h1>
 
           <form onSubmit={handleSubmit} className={styles.form}>
-            {loadingStatus && (
-              <div className={`${styles.status} ${styles.info}`}>Проверяем статус подтверждения...</div>
-            )}
             {statusMessage && (
               <div className={`${styles.status} ${styles.success}`}>{statusMessage}</div>
             )}
@@ -102,6 +85,16 @@ const VerifyEmail = () => {
             
             {!isVerified && (
               <>
+                <div className={styles.inputGroup}>
+                  <input
+                    type="email"
+                    placeholder="Ваш email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className={styles.input}
+                    required
+                  />
+                </div>
                 <div className={styles.inputGroup}>
                   <input
                     type="text"

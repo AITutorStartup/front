@@ -42,7 +42,7 @@ const Auth = () => {
     setInfo(null);
     setLoading(true);
     try {
-      await api.post("/auth/login", { email, password });
+      await api.post("/auth/loginEmail", { email, password });
       await refresh();
       setInfo("Вход выполнен. Перенаправляем...");
       
@@ -73,7 +73,7 @@ const Auth = () => {
 
     setLoading(true);
     try {
-      await api.post("/auth/register", { name: name.trim(), email: email.trim(), password });
+      await api.post("/auth/register", { first_name: name.trim(), email: email.trim(), password });
       setInfo("Аккаунт создан. Переключаемся на вход...");
       setTimeout(() => {
         setIsLogin(true);

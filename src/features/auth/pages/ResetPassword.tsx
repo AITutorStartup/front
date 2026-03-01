@@ -29,7 +29,7 @@ const ResetPassword = () => {
         setError(null);
 
         try {
-            await resetPasswordConfirm({ email, code, new_password: password });
+            await resetPasswordConfirm({ code, password });
             setSuccess(true);
             setTimeout(() => navigate("/login"), 3000);
         } catch (err: any) {

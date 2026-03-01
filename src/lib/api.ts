@@ -1,4 +1,4 @@
-const AUTH_BASE_URL = "https://task-livid-three.vercel.app";
+const AUTH_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
 type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
@@ -242,11 +242,11 @@ export async function changePassword(data: any) {
 }
 
 export async function resetPasswordRequest(email: string) {
-  return api.post("/auth/send-change-password-code", { email });
+  return api.post("/auth/send-password-reset-code", { email });
 }
 
 export async function resetPasswordConfirm(data: any) {
-  return api.post("/auth/change-ps-email", data);
+  return api.post("/auth/reset-password", data);
 }
 
 function processEvent(

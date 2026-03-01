@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     setIsChecking(true);
     try {
-      await api.get("/auth/check-auth");
+      await api.get("/users/check-auth");
       setStatus("authenticated");
     } catch {
       setStatus("unauthenticated");
@@ -61,7 +61,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
 
     try {
-      await api.post("/auth/logout");
+      await api.post("/users/logout");
     } catch (error) {
       console.error("Не удалось выйти из аккаунта", error);
     } finally {
