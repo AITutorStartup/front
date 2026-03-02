@@ -31,17 +31,7 @@ export default function XpToastManager() {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   };
 
-  return (
-    <>
-      {toasts.map((toast) => (
-        <XpToast
-          key={toast.id}
-          xpAmount={toast.xpAmount}
-          onComplete={() => handleComplete(toast.id)}
-        />
-      ))}
-    </>
-  );
+  return null;
 }
 
 
