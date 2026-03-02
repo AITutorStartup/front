@@ -51,7 +51,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.5rem 2rem;
+  padding: 1.25rem 2rem;
   gap: 2rem;
 }
 
@@ -78,6 +78,7 @@
   display: flex;
   align-items: center;
   gap: 1.5rem;
+  margin-right: 3rem;
 }
 
 /* Mode navigation - pill-shaped buttons */

@@ -869,13 +869,13 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 800px;
-  height: 800px;
+  width: 500px;
+  height: 500px;
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    hsl(var(--primary) / 0.18) 0%,
-    hsl(var(--primary) / 0.07) 35%,
+    hsl(var(--primary) / 0.08) 0%,
+    hsl(var(--primary) / 0.03) 35%,
     transparent 65%
   );
   pointer-events: none;

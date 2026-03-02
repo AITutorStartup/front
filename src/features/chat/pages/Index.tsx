@@ -285,17 +285,11 @@ const Index = () => {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.4 }}
       >
-        <motion.div
-          initial={{ opacity: 0, x: -24 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, delay: 0.1, ease: [0.23, 1, 0.32, 1] }}
-        >
-          <ChatSidebar
-            currentSessionId={currentSessionId}
-            onSessionChange={setCurrentSessionId}
-            onNewSession={handleNewSession}
-          />
-        </motion.div>
+        <ChatSidebar
+          currentSessionId={currentSessionId}
+          onSessionChange={setCurrentSessionId}
+          onNewSession={handleNewSession}
+        />
         <div className={styles.mainContent}>
           <motion.header
             className={styles.header}

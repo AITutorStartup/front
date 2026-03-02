@@ -8,7 +8,7 @@
 }
 
 .header {
-  padding: 1rem;
+  padding: 1.5rem;
   border-bottom: 1px solid hsl(var(--sidebar-border));
 }
 

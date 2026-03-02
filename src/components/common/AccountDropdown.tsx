@@ -37,8 +37,6 @@ const AccountDropdown = ({ onLogout }: AccountDropdownProps) => {
         type="button"
         className={styles.authLink}
         onClick={() => setIsOpen(!isOpen)}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
         transition={{ duration: 0.15 }}
       >
         Профиль
@@ -48,11 +46,10 @@ const AccountDropdown = ({ onLogout }: AccountDropdownProps) => {
         {isOpen && (
           <motion.div
             className={styles.dropdownMenu}
-            initial={{ opacity: 0, scale: 0.95, y: -8, x: "-50%" }}
-            animate={{ opacity: 1, scale: 1, y: 0, x: "-50%" }}
-            exit={{ opacity: 0, scale: 0.95, y: -8, x: "-50%" }}
+            initial={{ opacity: 0, y: -8, x: "-50%" }}
+            animate={{ opacity: 1, y: 0, x: "-50%" }}
+            exit={{ opacity: 0, y: -8, x: "-50%" }}
             transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
-            style={{ transformOrigin: "top center" }}
           >
             <motion.div
               variants={containerVariants}
@@ -88,7 +85,7 @@ const AccountDropdown = ({ onLogout }: AccountDropdownProps) => {
                     style={{
                       width: "100%",
                       padding: "0.6rem 1rem",
-                      textAlign: "left",
+                      textAlign: "center",
                       background: "transparent",
                       border: "none",
                       borderTop: "1px solid hsl(var(--border))",
