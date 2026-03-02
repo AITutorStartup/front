@@ -406,7 +406,19 @@ function PricingCard({ plan, delay }: { plan: typeof PLANS[0]; delay: number }) 
 const Welcome = () => {
   const [activeTab, setActiveTab] = useState<'parents' | 'children'>('parents');
   const formRef = useRef<HTMLDivElement>(null);
+  const cursorGlowRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (cursorGlowRef.current) {
+        cursorGlowRef.current.style.left = `${e.clientX}px`;
+        cursorGlowRef.current.style.top = `${e.clientY}px`;
+      }
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
 
   const scrollToForm = useCallback(() => {
     formRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -414,15 +426,19 @@ const Welcome = () => {
 
   return (
     <div className="wc">
+      {/* Cursor glow overlay */}
+      <div ref={cursorGlowRef} className="cursor-glow" aria-hidden />
+
       {/* ── Navbar ── */}
       <Navbar onScroll={scrollToForm} onNavigate={() => navigate('/app')} />
 
       {/* ══ HERO ══ */}
       <section className="hero">
-        <BackgroundBeams />
-
-        {/* Gradient orb */}
-        <div className="hero__orb" aria-hidden />
+        {/* Background effects in isolated overflow:hidden layer */}
+        <div className="hero__bg" aria-hidden>
+          <BackgroundBeams />
+          <div className="hero__orb" />
+        </div>
 
         <div className="hero__inner">
           <motion.div
@@ -473,15 +489,6 @@ const Welcome = () => {
           </motion.div>
         </div>
 
-        {/* Scroll indicator */}
-        <motion.div
-          className="hero__scroll-hint"
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-          aria-hidden
-        >
-          ↓
-        </motion.div>
       </section>
 
       {/* ══ PROBLEMS + TABS ══ */}
