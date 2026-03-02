@@ -13,6 +13,7 @@ const Auth = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
+  const [registeredEmail, setRegisteredEmail] = useState<string | null>(null);
   const location = useLocation();
   const navigate = useNavigate();
   const { refresh } = useAuth();
@@ -74,14 +75,8 @@ const Auth = () => {
     setLoading(true);
     try {
       await api.post("/auth/register", { first_name: name.trim(), email: email.trim(), password });
-      setInfo("Аккаунт создан. Переключаемся на вход...");
-      setTimeout(() => {
-        setIsLogin(true);
-        setInfo("Аккаунт создан. Войдите и подтвердите почту.");
-        setName("");
-        setPassword("");
-        setEmail("");
-      }, 1500);
+      setRegisteredEmail(email.trim());
+      setLoading(false);
     } catch (err: any) {
       let errorMessage =
         err?.message && typeof err.message === "string"
@@ -143,6 +138,35 @@ const Auth = () => {
                   {loading ? "Вхожу..." : "ВОЙТИ"}
                 </Button>
               </form>
+            </>
+          ) : registeredEmail ? (
+            <>
+              <h1 className={styles.title}>Аккаунт создан!</h1>
+              <div className={styles.form}>
+                <div className={`${styles.status} ${styles.info}`}>
+                  Аккаунт для <strong>{registeredEmail}</strong> успешно создан. Подтвердите почту, чтобы войти.
+                </div>
+                <Button
+                  type="button"
+                  className={styles.submitButton}
+                  onClick={() => navigate(`/verify-email?email=${encodeURIComponent(registeredEmail)}`)}
+                >
+                  ПОДТВЕРДИТЬ ПОЧТУ
+                </Button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setRegisteredEmail(null);
+                    setIsLogin(true);
+                    setEmail("");
+                    setPassword("");
+                    setName("");
+                  }}
+                  className={styles.secondaryButton}
+                >
+                  Войти в аккаунт
+                </button>
+              </div>
             </>
           ) : (
             <>

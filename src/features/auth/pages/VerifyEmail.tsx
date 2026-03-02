@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Button from "@/components/ui/button";
 import { api } from "@/lib/api";
 import styles from "./Auth.module.css";
@@ -7,7 +7,8 @@ import styles from "./Auth.module.css";
 const RESEND_COOLDOWN = 60;
 
 const VerifyEmail = () => {
-  const [email, setEmail] = useState("");
+  const [searchParams] = useSearchParams();
+  const [email, setEmail] = useState(searchParams.get("email") ?? "");
   const [code, setCode] = useState("");
   const [cooldown, setCooldown] = useState(0);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
