@@ -867,17 +867,20 @@
 ══════════════════════════════════════════════════════ */
 .cursor-glow {
   position: fixed;
-  width: 700px;
-  height: 700px;
+  top: 0;
+  left: 0;
+  width: 800px;
+  height: 800px;
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    hsl(var(--primary) / 0.07) 0%,
+    hsl(var(--primary) / 0.18) 0%,
+    hsl(var(--primary) / 0.07) 35%,
     transparent 65%
   );
-  transform: translate(-50%, -50%);
   pointer-events: none;
   z-index: 9999;
-  will-change: left, top;
-  transition: left 0.12s ease-out, top 0.12s ease-out;
+  /* start fully off-screen until first mousemove */
+  transform: translate(-9999px, -9999px);
+  will-change: transform;
 }

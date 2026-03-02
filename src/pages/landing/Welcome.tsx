@@ -412,8 +412,8 @@ const Welcome = () => {
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (cursorGlowRef.current) {
-        cursorGlowRef.current.style.left = `${e.clientX}px`;
-        cursorGlowRef.current.style.top = `${e.clientY}px`;
+        cursorGlowRef.current.style.transform =
+          `translate(calc(${e.clientX}px - 50%), calc(${e.clientY}px - 50%))`;
       }
     };
     window.addEventListener('mousemove', handleMouseMove);
