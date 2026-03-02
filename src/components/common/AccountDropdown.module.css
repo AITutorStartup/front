@@ -32,28 +32,16 @@
   position: absolute;
   top: calc(100% + 0.25rem);
   left: 50%;
-  transform: translateX(-50%);
+  /* transform is managed by Framer Motion */
   background: hsl(var(--background));
   border-radius: 12px;
   box-shadow: 0 8px 24px hsl(var(--foreground) / 0.15);
   min-width: 180px;
   padding: 0.5rem;
   z-index: 1000;
-  animation: slideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   border: 1px solid hsl(var(--border));
   backdrop-filter: blur(10px);
   pointer-events: auto;
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateX(-50%) translateY(-12px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0) scale(1);
-  }
 }
 
 .dropdownItem {

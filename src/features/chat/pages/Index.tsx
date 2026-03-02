@@ -24,6 +24,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import ChatSidebar from "@/features/chat/components/ChatSidebar";
 import ChatMessage from "@/features/chat/components/ChatMessage";
 import ChatInput from "@/features/chat/components/ChatInput";
@@ -273,26 +274,35 @@ const Index = () => {
       );
     }
 
-    return (
-      <>
-        <AccountDropdown />
-        <button type="button" onClick={handleLogout} className={styles.authLink}>
-          Выйти
-        </button>
-      </>
-    );
+    return <AccountDropdown onLogout={handleLogout} />;
   };
 
   return (
     <SidebarProvider>
-      <div className={styles.pageWrapper}>
-        <ChatSidebar
-          currentSessionId={currentSessionId}
-          onSessionChange={setCurrentSessionId}
-          onNewSession={handleNewSession}
-        />
+      <motion.div
+        className={styles.pageWrapper}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.4 }}
+      >
+        <motion.div
+          initial={{ opacity: 0, x: -24 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.1, ease: [0.23, 1, 0.32, 1] }}
+        >
+          <ChatSidebar
+            currentSessionId={currentSessionId}
+            onSessionChange={setCurrentSessionId}
+            onNewSession={handleNewSession}
+          />
+        </motion.div>
         <div className={styles.mainContent}>
-          <header className={styles.header}>
+          <motion.header
+            className={styles.header}
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
+          >
             <div className={styles.headerContent}>
               <div className={styles.headerTitle}>
                 <SidebarTrigger />
@@ -327,7 +337,7 @@ const Index = () => {
                 <div className={styles.authLinks}>{renderAuthActions()}</div>
               </div>
             </div>
-          </header>
+          </motion.header>
           <main className={styles.chatArea}>
             <div className={styles.chatContainer}>
               <div className={styles.messagesContainer}>
@@ -353,7 +363,7 @@ const Index = () => {
           </main>
         </div>
         <XpToastManager />
-      </div>
+      </motion.div>
     </SidebarProvider>
   );
 };
