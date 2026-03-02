@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import Button from "@/components/ui/button";
 import { api } from "@/lib/api";
 import styles from "./Auth.module.css";
@@ -72,21 +73,63 @@ const VerifyEmail = () => {
   };
 
   return (
-    <div className={styles.authContainer}>
+    <motion.div
+      className={styles.authContainer}
+      initial={{ opacity: 0, scale: 0.97 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
+    >
+      <motion.div
+        className={styles.orb1}
+        animate={{ y: [0, -30, 0] }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+        className={styles.orb2}
+        animate={{ y: [0, 20, 0] }}
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+      />
       <div className={styles.splitContainer}>
         {/* Form Panel - Left */}
         <div className={`${styles.formPanel} ${styles.leftPanel}`}>
           <h1 className={styles.title}>Подтвердите почту</h1>
 
           <form onSubmit={handleSubmit} className={styles.form}>
-            {statusMessage && (
-              <div className={`${styles.status} ${styles.success}`}>{statusMessage}</div>
-            )}
-            {error && <div className={`${styles.status} ${styles.error}`}>{error}</div>}
-            
+            <AnimatePresence>
+              {statusMessage && (
+                <motion.div
+                  className={`${styles.status} ${styles.success}`}
+                  initial={isVerified ? { opacity: 0, scale: 0.95 } : { opacity: 0, y: -8, height: 0 }}
+                  animate={isVerified ? { opacity: 1, scale: 1 } : { opacity: 1, y: 0, height: "auto" }}
+                  exit={{ opacity: 0, y: -8, height: 0 }}
+                  transition={{ duration: isVerified ? 0.4 : 0.3 }}
+                >
+                  {statusMessage}
+                </motion.div>
+              )}
+            </AnimatePresence>
+            <AnimatePresence>
+              {error && (
+                <motion.div
+                  className={`${styles.status} ${styles.error}`}
+                  initial={{ opacity: 0, y: -8, height: 0 }}
+                  animate={{ opacity: 1, y: 0, height: "auto" }}
+                  exit={{ opacity: 0, y: -8, height: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {error}
+                </motion.div>
+              )}
+            </AnimatePresence>
+
             {!isVerified && (
               <>
-                <div className={styles.inputGroup}>
+                <motion.div
+                  className={styles.inputGroup}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0 * 0.08, duration: 0.4 }}
+                >
                   <input
                     type="email"
                     placeholder="Ваш email"
@@ -95,8 +138,13 @@ const VerifyEmail = () => {
                     className={styles.input}
                     required
                   />
-                </div>
-                <div className={styles.inputGroup}>
+                </motion.div>
+                <motion.div
+                  className={styles.inputGroup}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 1 * 0.08, duration: 0.4 }}
+                >
                   <input
                     type="text"
                     inputMode="numeric"
@@ -108,7 +156,7 @@ const VerifyEmail = () => {
                     className={styles.input}
                     required
                   />
-                </div>
+                </motion.div>
                 <Button type="submit" disabled={code.trim().length !== 6} className={styles.submitButton}>
                   Подтвердить email
                 </Button>
@@ -117,9 +165,9 @@ const VerifyEmail = () => {
           </form>
 
           {!isVerified && (
-            <button 
-              type="button" 
-              onClick={handleSendCode} 
+            <button
+              type="button"
+              onClick={handleSendCode}
               disabled={cooldown > 0}
               className={styles.secondaryButton}
             >
@@ -138,26 +186,45 @@ const VerifyEmail = () => {
               Мы отправим шестизначный код на email, указанный при регистрации. После подтверждения откроется доступ к обучающим материалам.
             </p>
             {!isVerified && (
-              <ul style={{ 
-                marginTop: "2rem", 
-                paddingLeft: "1.5rem", 
-                fontSize: "0.9rem", 
+              <ul style={{
+                marginTop: "2rem",
+                paddingLeft: "1.5rem",
+                fontSize: "0.9rem",
                 color: "rgba(255, 255, 255, 0.95)",
                 lineHeight: "1.8",
                 textAlign: "left",
                 maxWidth: "280px"
               }}>
-                <li style={{ marginBottom: "0.75rem" }}>Письмо может попасть в папку «Спам» или «Промоакции».</li>
-                <li style={{ marginBottom: "0.75rem" }}>Новый код можно запрашивать не чаще одного раза в минуту.</li>
-                <li>Если не получается подтвердить почту — напишите нам, поможем.</li>
+                <motion.li
+                  style={{ marginBottom: "0.75rem" }}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0 * 0.1, duration: 0.4 }}
+                >
+                  Письмо может попасть в папку «Спам» или «Промоакции».
+                </motion.li>
+                <motion.li
+                  style={{ marginBottom: "0.75rem" }}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 1 * 0.1, duration: 0.4 }}
+                >
+                  Новый код можно запрашивать не чаще одного раза в минуту.
+                </motion.li>
+                <motion.li
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 2 * 0.1, duration: 0.4 }}
+                >
+                  Если не получается подтвердить почту — напишите нам, поможем.
+                </motion.li>
               </ul>
             )}
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
 export default VerifyEmail;
-
