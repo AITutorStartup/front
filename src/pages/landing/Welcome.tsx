@@ -583,7 +583,7 @@ const Welcome = () => {
             variant="primary"
             size="lg"
           >
-            Отправить данные
+            Рассказать о себе
           </MovingBorderButton>
         </FIV>
       </section>
