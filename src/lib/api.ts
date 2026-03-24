@@ -1,6 +1,55 @@
 // Базовый URL API - можно переопределить через переменную окружения VITE_API_URL
 const AUTH_BASE_URL = import.meta.env.VITE_API_URL || "http://194.67.99.120:8000";
 
+// Маппинг английских сообщений от FastAPI → русские
+const ERROR_TRANSLATIONS: Record<string, string> = {
+  // Валидация полей
+  "field required": "Поле обязательно для заполнения",
+  "value is not a valid email": "Некорректный адрес электронной почты",
+  "value is not a valid string": "Некорректное значение",
+  "ensure this value has at least 12 characters": "Пароль должен содержать минимум 12 символов",
+  "ensure this value has at least 8 characters": "Пароль должен содержать минимум 8 символов",
+  "ensure this value has at least 2 characters": "Значение должно содержать минимум 2 символа",
+  "ensure this value has at most 50 characters": "Значение не должно превышать 50 символов",
+  "ensure this value has at most 128 characters": "Значение не должно превышать 128 символов",
+  "ensure this value is greater than or equal to 1": "Значение должно быть не менее 1",
+  "ensure this value is less than or equal to 11": "Значение должно быть не более 11",
+  "string does not match regex": "Некорректный формат",
+  "value is not a valid integer": "Должно быть числом",
+  // Авторизация
+  "invalid credentials": "Неверный email или пароль",
+  "incorrect email or password": "Неверный email или пароль",
+  "unauthorized": "Необходима авторизация",
+  "not authenticated": "Необходима авторизация",
+  "could not validate credentials": "Ошибка проверки данных",
+  // Пользователи
+  "user already exists": "Пользователь с таким email уже существует",
+  "email already registered": "Этот email уже зарегистрирован",
+  "user not found": "Пользователь не найден",
+  "email not found": "Email не найден",
+  // Коды подтверждения
+  "invalid code": "Неверный код подтверждения",
+  "code expired": "Срок действия кода истёк",
+  "invalid or expired code": "Неверный или просроченный код",
+  "code not found": "Код не найден",
+  // HTTP статусы
+  "not found": "Ресурс не найден",
+  "internal server error": "Ошибка сервера. Попробуйте позже",
+  "bad request": "Некорректный запрос",
+  "forbidden": "Доступ запрещён",
+};
+
+function translateError(message: string): string {
+  const lower = message.toLowerCase().trim();
+  // Точное совпадение
+  if (ERROR_TRANSLATIONS[lower]) return ERROR_TRANSLATIONS[lower];
+  // Частичное совпадение
+  for (const [key, value] of Object.entries(ERROR_TRANSLATIONS)) {
+    if (lower.includes(key)) return value;
+  }
+  return message;
+}
+
 type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
 export class ApiError extends Error {
@@ -78,13 +127,28 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
     const data = await parseResponse(response);
 
     if (!response.ok) {
-      const message =
-        (data && typeof data === "object" && "detail" in data && (data as any).detail) ||
-        (data && typeof data === "object" && "message" in data && (data as any).message) ||
-        (typeof data === "string" && data) ||
-        response.statusText;
+      let message: string = response.statusText || "Request failed";
 
-      throw new ApiError(String(message || "Request failed"), response.status, data);
+      if (data && typeof data === "object") {
+        const detail = (data as any).detail;
+
+        if (Array.isArray(detail)) {
+          // FastAPI validation errors: [{loc: [...], msg: "...", type: "..."}]
+          message = detail
+            .map((err: any) => translateError(err.msg || err.message || JSON.stringify(err)))
+            .join("; ");
+        } else if (typeof detail === "string") {
+          message = translateError(detail);
+        } else if (typeof (data as any).message === "string") {
+          message = translateError((data as any).message);
+        }
+      } else if (typeof data === "string" && data) {
+        message = translateError(data);
+      } else {
+        message = translateError(message);
+      }
+
+      throw new ApiError(message, response.status, data);
     }
 
     return data as T;
