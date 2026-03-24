@@ -1,8 +1,17 @@
 /**
  * Leaderboard API Client
- * 
+ *
  * Provides functions to fetch leaderboard data.
  * Currently uses mock data, but structured to easily swap to real API calls.
+ *
+ * TODO: Эндпоинты для leaderboard НЕ СУЩЕСТВУЮТ в текущем API бэкенда!
+ * Когда бэкенд добавит эндпоинты (например GET /leaderboard?period=week),
+ * заменить мок-функции на реальные API вызовы:
+ *
+ * import { api } from "@/lib/api";
+ * export async function getLeaderboard(period: "week" | "month" = "week"): Promise<LeaderboardResponse> {
+ *   return api.get<LeaderboardResponse>(`/leaderboard?period=${period}`);
+ * }
  */
 
 import { LeaderboardResponse, LeaderboardEntry } from "../xp/types";

@@ -1,4 +1,5 @@
-const AUTH_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+// Базовый URL API - можно переопределить через переменную окружения VITE_API_URL
+const AUTH_BASE_URL = import.meta.env.VITE_API_URL || "http://194.67.99.120:8000";
 
 type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
@@ -237,6 +238,9 @@ export async function stopGeneration() {
   return api.post("/chat/stop");
 }
 
+// TODO: Эндпоинт /users/change-password НЕ СУЩЕСТВУЕТ в текущем API бэкенда!
+// Когда бэкенд добавит этот эндпоинт, убрать этот комментарий.
+// Ожидаемый формат: { email, current_password, new_password }
 export async function changePassword(data: any) {
   return api.put("/users/change-password", data);
 }
@@ -247,6 +251,39 @@ export async function resetPasswordRequest(email: string) {
 
 export async function resetPasswordConfirm(data: any) {
   return api.post("/auth/reset-password", data);
+}
+
+/**
+ * Получить историю чата текущего пользователя
+ * GET /chat/history
+ */
+export async function getChatHistory() {
+  return api.get("/chat/history");
+}
+
+/**
+ * Получить список активных стримов пользователя
+ * GET /chat/active
+ */
+export async function getActiveStreams() {
+  return api.get("/chat/active");
+}
+
+/**
+ * Очистить все чаты пользователя
+ * DELETE /chat/cleanup
+ */
+export async function cleanupChats() {
+  return api.delete("/chat/cleanup");
+}
+
+/**
+ * Удалить аккаунт пользователя
+ * POST /auth/delete
+ * @param password - текущий пароль для подтверждения
+ */
+export async function deleteAccount(password: string) {
+  return api.post("/auth/delete", { password });
 }
 
 function processEvent(

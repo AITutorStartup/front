@@ -63,6 +63,7 @@ const VerifyEmail = () => {
     setError(null);
     setStatusMessage(null);
     try {
+      // API принимает только code (6 цифр), email берётся из сессии на бэкенде
       await api.post("/auth/verify-email", { code: code.trim() });
       setStatusMessage("Email успешно подтверждён. Сейчас перенаправим в чат.");
       setIsVerified(true);

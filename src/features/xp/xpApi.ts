@@ -1,8 +1,21 @@
 /**
  * XP API Client
- * 
+ *
  * This module provides functions to interact with the XP backend API.
  * Currently uses mock adapters, but structured to easily swap to real API calls.
+ *
+ * TODO: Эндпоинты для XP системы НЕ СУЩЕСТВУЮТ в текущем API бэкенда!
+ * Когда бэкенд добавит эндпоинты, заменить мок-функции на реальные API вызовы:
+ *
+ * import { api } from "@/lib/api";
+ *
+ * export async function postXpEvents(events: XpEventClient[]): Promise<XpEventServer[]> {
+ *   return api.post<XpEventServer[]>("/xp/events", { events });
+ * }
+ *
+ * export async function getXpSummary(): Promise<UserXpSummary> {
+ *   return api.get<UserXpSummary>("/xp/summary");
+ * }
  */
 
 import { XpEventClient, XpEventServer, UserXpSummary } from "./types";

@@ -1,7 +1,8 @@
 
-import { useState } from "react";
-import { MessageSquare, Plus } from "lucide-react";
+import { useState, useEffect } from "react";
+import { MessageSquare, Plus, Loader2 } from "lucide-react";
 import { useSidebar } from "@/context/SidebarContext";
+import { getChatHistory } from "@/lib/api";
 import styles from "./ChatSidebar.module.css";
 
 interface Session {
@@ -22,27 +23,48 @@ const ChatSidebar = ({
   onSessionChange,
   onNewSession,
 }: ChatSidebarProps) => {
-  const { isOpen } = useSidebar(); // 2. Получаем состояние сайдбара
-  const [sessions] = useState<Session[]>([
-    {
-      id: "1",
-      title: "Математика: Квадратные уравнения",
-      preview: "Объясни как решать...",
-      timestamp: new Date(),
-    },
-    {
-      id: "2",
-      title: "Физика: Законы Ньютона",
-      preview: "Дай задание на...",
-      timestamp: new Date(Date.now() - 86400000),
-    },
-    {
-      id: "3",
-      title: "Химия: Органические соединения",
-      preview: "Проверь решение...",
-      timestamp: new Date(Date.now() - 172800000),
-    },
-  ]);
+  const { isOpen } = useSidebar();
+  const [sessions, setSessions] = useState<Session[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Загружаем историю чатов с бэкенда
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const loadHistory = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await getChatHistory();
+        // TODO: Адаптировать формат ответа API к интерфейсу Session
+        // Предполагаемый формат ответа: массив объектов с полями id, title/name, preview/lastMessage, timestamp/createdAt
+        if (Array.isArray(data)) {
+          const mapped: Session[] = data.map((item: any, index: number) => ({
+            id: item.id || item.chat_id || String(index + 1),
+            title: item.title || item.name || `Чат ${index + 1}`,
+            preview: item.preview || item.last_message || item.lastMessage || "",
+            timestamp: item.timestamp || item.created_at || item.createdAt
+              ? new Date(item.timestamp || item.created_at || item.createdAt)
+              : new Date(),
+          }));
+          setSessions(mapped);
+        } else {
+          // Если API вернул не массив, показываем пустую историю
+          setSessions([]);
+        }
+      } catch (err: any) {
+        console.error("Не удалось загрузить историю чатов:", err);
+        setError("Не удалось загрузить историю");
+        // Fallback: показываем пустой список
+        setSessions([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadHistory();
+  }, [isOpen]);
 
   // Утилита для условного объединения классов
   const combineClasses = (...classNames: (string | boolean | undefined)[]) => {
@@ -66,25 +88,36 @@ const ChatSidebar = ({
 
       <div className={styles.content}>
         <div className={styles.groupLabel}>История сессий</div>
-        <ul className={styles.menu}>
-          {sessions.map((session) => (
-            <li key={session.id}>
-              <button
-                onClick={() => onSessionChange(session.id)}
-                className={combineClasses(
-                  styles.menuButton,
-                  currentSessionId === session.id && styles.menuButtonActive
-                )}
-              >
-                <MessageSquare className={styles.sessionIcon} />
-                <div className={styles.textWrapper}>
-                  <div className={styles.title}>{session.title}</div>
-                  <div className={styles.preview}>{session.preview}</div>
-                </div>
-              </button>
-            </li>
-          ))}
-        </ul>
+        {loading ? (
+          <div className={styles.loadingState}>
+            <Loader2 className={styles.spinner} />
+            <span>Загрузка...</span>
+          </div>
+        ) : error ? (
+          <div className={styles.errorState}>{error}</div>
+        ) : sessions.length === 0 ? (
+          <div className={styles.emptyState}>Нет истории чатов</div>
+        ) : (
+          <ul className={styles.menu}>
+            {sessions.map((session) => (
+              <li key={session.id}>
+                <button
+                  onClick={() => onSessionChange(session.id)}
+                  className={combineClasses(
+                    styles.menuButton,
+                    currentSessionId === session.id && styles.menuButtonActive
+                  )}
+                >
+                  <MessageSquare className={styles.sessionIcon} />
+                  <div className={styles.textWrapper}>
+                    <div className={styles.title}>{session.title}</div>
+                    <div className={styles.preview}>{session.preview}</div>
+                  </div>
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </aside>
   );

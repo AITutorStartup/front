@@ -5,15 +5,23 @@ import { mockStudyDashboard, StudyDashboardData } from "@/features/study/lib/moc
 /**
  * Hook to fetch study dashboard data
  * Currently returns mock data, but structured to easily switch to API calls
+ *
+ * TODO: Эндпоинт /study-dashboard НЕ СУЩЕСТВУЕТ в текущем API бэкенда!
+ * Когда бэкенд добавит этот эндпоинт, раскомментировать строку с api.get
+ * и удалить мок-данные:
+ *
+ * queryFn: async () => {
+ *   return api.get<StudyDashboardData>("/study-dashboard");
+ * },
  */
 export function useStudyDashboard() {
   return useQuery<StudyDashboardData>({
     queryKey: ["study-dashboard"],
     queryFn: async () => {
-      // TODO: Replace with actual API call when backend is ready
+      // TODO: Раскомментировать когда бэкенд добавит эндпоинт:
       // return api.get<StudyDashboardData>("/study-dashboard");
-      
-      // For now, return mock data with a small delay to simulate API call
+
+      // Мок-данные пока эндпоинт не реализован
       await new Promise((resolve) => setTimeout(resolve, 300));
       return mockStudyDashboard;
     },
