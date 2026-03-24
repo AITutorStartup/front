@@ -15,6 +15,8 @@ const VerifyEmail = () => {
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isVerified, setIsVerified] = useState(false);
+  // DEV: код из ответа бэкенда (пока почта не работает)
+  const [devCode, setDevCode] = useState<string | null>(null);
   const navigate = useNavigate();
 
 
@@ -45,10 +47,21 @@ const VerifyEmail = () => {
     }
     setError(null);
     setStatusMessage(null);
+    setDevCode(null);
     try {
-      await api.post("/auth/send-verification/email", { email: email.trim() });
-      setStatusMessage("Мы отправили код на вашу почту. Проверьте входящие и спам.");
+      const res = await api.post<{ message?: string }>("/auth/send-verification/email", { email: email.trim() });
+      setStatusMessage("Код отправлен. Проверьте входящие и спам.");
       setCooldown(RESEND_COOLDOWN);
+
+      // DEV: бэкенд возвращает код прямо в message ("Код подтверждения отправлен123456")
+      // Убрать этот блок когда почта заработает на проде
+      if (import.meta.env.DEV || import.meta.env.VITE_SHOW_DEV_CODE === "true") {
+        const match = res?.message?.match(/\d{6}/);
+        if (match) {
+          setDevCode(match[0]);
+          console.log("[DEV] Код подтверждения:", match[0]);
+        }
+      }
     } catch (err: any) {
       setError(err.message || "Не удалось отправить код. Попробуйте позже.");
     }
@@ -157,6 +170,19 @@ const VerifyEmail = () => {
                     className={styles.input}
                     required
                   />
+                  {/* DEV: показываем код пока почта не работает. Убрать когда заработает */}
+                  {devCode && (
+                    <div style={{
+                      marginTop: "0.4rem",
+                      fontSize: "0.8rem",
+                      color: "hsl(var(--muted-foreground))",
+                      padding: "0.3rem 0.6rem",
+                      background: "hsl(var(--muted) / 0.5)",
+                      borderRadius: "4px",
+                    }}>
+                      Код для теста: <strong style={{ letterSpacing: "0.15em" }}>{devCode}</strong>
+                    </div>
+                  )}
                 </motion.div>
                 <Button type="submit" disabled={code.trim().length !== 6} className={styles.submitButton}>
                   Подтвердить email
